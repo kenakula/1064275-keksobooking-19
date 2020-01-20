@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Кенан Агаев](https://up.htmlacademy.ru/javascript/19/user/1064275).
-* Наставник: `Неизвестно`.
+* Наставник: [Иван Чернобук](https://htmlacademy.ru/profile/id237614).
 
 ---
 

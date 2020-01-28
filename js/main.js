@@ -34,8 +34,6 @@ var getRoomsNumber = function (offer) {
   return Math.ceil(Math.random() * index);
 };
 
-// что-то не так с логикой
-
 var getGuestsNumber = function (offer) {
   return 2 * offer.rooms;
 };

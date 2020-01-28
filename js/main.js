@@ -18,7 +18,7 @@ var getType = function () {
   return flatTypes[Math.floor(Math.random() * 4)];
 };
 
-var getRoomNumber = function (offer) {
+var getRoomsNumber = function (offer) {
   var index;
 
   if (offer.type === 'palace') {
@@ -33,12 +33,12 @@ var getRoomNumber = function (offer) {
 
   return Math.ceil(Math.random() * index);
 };
-debugger;
-// не работает
+
+// что-то не так с логикой
 
 var getGuestsNumber = function (offer) {
-  return Math.ceil(Math.random() * offer.rooms);
-}
+  return 2 * offer.rooms;
+};
 
 var createOffer = function () {
   var offer = {};
@@ -47,7 +47,7 @@ var createOffer = function () {
   offer.address = '{{location.x}}, {{location.y}}';
   offer.price = getPrice();
   offer.type = getType();
-  offer.rooms = getRoomNumber(offer);
+  offer.rooms = getRoomsNumber(offer);
   offer.guests = getGuestsNumber(offer);
 
   return offer;

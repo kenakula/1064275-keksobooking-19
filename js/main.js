@@ -1,133 +1,213 @@
 /* eslint-disable no-console */
 'use strict';
+// координаты адресов
+var ADDRESS_MIN_X = 100;
+var ADDRESS_MAX_X = 1000;
+var ADDRESS_MIN_Y = 50;
+var ADDRESS_MAX_Y = 500;
+// координаты меток на карте
+var PIN_MIN_X = 0;
+var PIN_MAX_X = 800;
+var PIN_MIN_Y = 130;
+var PIN_MAX_Y = 630;
+// другое
+var ROOM_CAPACITY = 2;
+var OFFER_COUNT = 8;
 
-var map = document.querySelector('.map');
-map.classList.remove('map--faded');
+var titles = [
+  'Заголовок предложения 1',
+  'Заголовок предложения 2',
+  'Заголовок предложения 3',
+  'Заголовок предложения 4',
+  'Заголовок предложения 5',
+  'Заголовок предложения 6',
+  'Заголовок предложения 7',
+  'Заголовок предложения 8'
+];
 
-// получает фотографию аватара автора
-var getImageLink = function () {
-  return 'img/avatars/user0' + i + '.png';
+var flatTypes = [
+  'palace',
+  'flat',
+  'house',
+  'bungalo'
+];
+
+var checkinTimes = [
+  '12:00',
+  '13:00',
+  '14:00'
+];
+
+var checkoutTimes = [
+  '12:00',
+  '13:00',
+  '14:00'
+];
+
+var features = [
+  'wifi',
+  'dishwasher',
+  'parking',
+  'washer',
+  'elevator',
+  'conditioner',
+];
+
+var descriptions = [
+  'Описание 1',
+  'Описание 2',
+  'Описание 3',
+  'Описание 4',
+  'Описание 5',
+  'Описание 6',
+  'Описание 7',
+  'Описание 8',
+];
+
+var photoLinks = [
+  'http://o0.github.io/assets/images/tokyo/hotel1.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel2.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel3.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel4.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel5.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel6.jpg',
+];
+
+// получает случайное число в заданном диапазоне +
+var getRandomInt = function (min, max) {
+  var rand = min + Math.random() * (max + 1 - min);
+
+  return Math.floor(rand);
 };
 
-// получает заголовок предложения
-var getTitle = function () {
-  var title = 'Заголовок предложения';
+// получает случайную строку из массива +
+var getRandomItemsFromArray = function (array, string) {
+  var ITEMS_COUNT = getRandomInt(0, array.length);
 
-  return title;
+  for (var i = 0; i < ITEMS_COUNT; i++) {
+    var item = i === 0 ? array[i] : ', ' + array[i];
+    string += item;
+  }
+
+  return string;
 };
 
-// получает адрес объекта предложения
+// получает максимальный индекс массива +
+var getMaxIndex = function (array) {
+  return array.length - 1;
+};
+
+// получает фотографию аватара автора +
+var getImageLink = function (index) {
+  var imgNum = index + 1;
+  return 'img/avatars/user0' + imgNum + '.png';
+};
+
+// получает заголовок предложения +
+var getTitle = function (index) {
+  return titles[index];
+};
+
+// получает адрес объекта предложения +
 var getAddress = function () {
-  var address = '{{location.x}}, {{location.y}}';
+  var coordX = getRandomInt(ADDRESS_MIN_X, ADDRESS_MAX_X);
+  var coordY = getRandomInt(ADDRESS_MIN_Y, ADDRESS_MAX_Y);
+
+  var address = coordX + ', ' + coordY;
 
   return address;
 };
 
-// получает цену аренды объекта
+// получает цену аренды объекта +
 var getPrice = function () {
-  return Math.round(Math.random() * 2000) + ' Рублей за сутки';
+  return getRandomInt(0, 2000);
 };
 
-// получает тип объекта
+// получает тип объекта +
 var getType = function () {
-  var flatTypes = ['palace', 'flat', 'house', 'bungalo'];
-
-  return flatTypes[Math.floor(Math.random() * flatTypes.length)];
+  return flatTypes[getRandomInt(0, getMaxIndex(flatTypes))];
 };
 
-// получает количество комнат объекта
-var getRoomsNumber = function (offer) {
-  var index;
-
-  if (offer.type === 'palace') {
-    index = 20;
-  } else if (offer.type === 'flat') {
-    index = 5;
-  } else if (offer.type === 'house') {
-    index = 10;
-  } else if (offer.type === 'bungalo') {
-    index = 3;
+// получает количество комнат объекта +
+var getRoomsNumber = function (type) {
+  switch (type) {
+    case 'bungalo':
+      return getRandomInt(1, 3);
+    case 'flat':
+      return getRandomInt(1, 5);
+    case 'house':
+      return getRandomInt(4, 10);
+    case 'palace':
+      return getRandomInt(10, 20);
+    default:
+      return 3;
   }
-
-  return Math.ceil(Math.random() * index);
 };
 
-// получает количество гостей
-var getGuestsNumber = function (offer) {
-  return 2 * offer.rooms;
+// получает количество гостей +
+var getGuestsNumber = function (rooms) {
+  return ROOM_CAPACITY * rooms;
 };
 
-// получает время поступления
+// получает время поступления +
 var getCheckinTime = function () {
-  var checkinTimes = ['12:00', '13:00', '14:00'];
-
-  return checkinTimes[Math.floor(Math.random() * checkinTimes.length)];
+  return checkinTimes[getRandomInt(0, getMaxIndex(checkinTimes))];
 };
 
-// получает время убытия
+// получает время убытия +
 var getCheckoutTime = function () {
-  var checkoutTimes = ['12:00', '13:00', '14:00'];
-
-  return checkoutTimes[Math.floor(Math.random() * checkoutTimes.length)];
+  return checkoutTimes[getRandomInt(0, getMaxIndex(checkoutTimes))];
 };
 
-// получает список удобств
+// получает список удобств +
 var getFeatures = function () {
-  var features = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
   var featuresString = '';
 
-  for (var i = 0; i < features.length; i++) {
-    if (i === features.length - 1) {
-      featuresString += features[i];
-    } else {
-      featuresString += features[i] + ', ';
-    }
-  }
-
-  return featuresString;
+  return getRandomItemsFromArray(features, featuresString);
 };
 
-// получает описание объекта
+// получает описание объекта +
 var getDescription = function () {
-  var description = 'Здесь описание объекта';
+  var descriptionString = '';
 
-  return description;
+  return getRandomItemsFromArray(descriptions, descriptionString);
 };
 
-// получает ссылки фотографий объекта
+// получает ссылки фотографий объекта +
 var getPhotos = function () {
-  var photoLinks = ['http://o0.github.io/assets/images/tokyo/hotel1.jpg', 'http://o0.github.io/assets/images/tokyo/hotel2.jpg', 'http://o0.github.io/assets/images/tokyo/hotel3.jpg'];
+  var linksString = '';
 
-  return photoLinks;
+  return getRandomItemsFromArray(photoLinks, linksString);
 };
 
-// получает координаты метки
+// получает координаты метки +
 var getLocation = function () {
   var location = {};
-  location.x = Math.floor(Math.random() * (801 - 0));
-  location.y = Math.floor(Math.random() * (631 - 130));
+  location.x = getRandomInt(PIN_MIN_X, PIN_MAX_X);
+  location.y = getRandomInt(PIN_MIN_Y, PIN_MAX_Y);
 
   return location;
 };
 
 // создает объект автора
-var createAuthor = function () {
+var createAuthor = function (index) {
   var author = {};
-  author.avatar = getImageLink();
+
+  author.avatar = getImageLink(index);
 
   return author;
 };
 
 // создает объект предложениe
-var createOffer = function () {
+var createOffer = function (index) {
   var offer = {};
 
-  offer.title = getTitle();
+  offer.title = getTitle(index);
   offer.address = getAddress();
   offer.price = getPrice();
   offer.type = getType();
-  offer.rooms = getRoomsNumber(offer);
-  offer.guests = getGuestsNumber(offer);
+  offer.rooms = getRoomsNumber(offer.type);
+  offer.guests = getGuestsNumber(offer.rooms);
   offer.checkin = getCheckinTime();
   offer.checkout = getCheckoutTime();
   offer.features = getFeatures();
@@ -139,26 +219,34 @@ var createOffer = function () {
 };
 
 // создает объект объявления
-var createObject = function () {
+var createObject = function (index) {
   var object = {};
 
-  object.author = createAuthor();
-  object.offer = createOffer();
+  object.author = createAuthor(index);
+  object.offer = createOffer(index);
 
   return object;
 };
 
 // создает массив похожих объявлений
-
 var nearbyOffers = [];
 
-for (var i = 1; i < 9; i++) {
-  nearbyOffers.push(createObject());
-}
+var getMocks = function (count) {
 
-// находит шаблон пина и область куда будем вставлять их
+  for (var i = 0; i < count; i++) {
+    nearbyOffers.push(createObject(i));
+  }
+
+  return nearbyOffers;
+};
+
+getMocks(OFFER_COUNT);
+
 var mapArea = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('.map__pin');
+// находит шаблон пина и область куда будем вставлять их
+var map = document.querySelector('.map');
+map.classList.remove('map--faded');
 
 // перебирает массив объектов и подставляет данные
 for (var j = 0; j < 8; j++) {
@@ -173,3 +261,5 @@ for (var j = 0; j < 8; j++) {
 
   mapArea.appendChild(pinElement);
 }
+
+console.log(nearbyOffers);

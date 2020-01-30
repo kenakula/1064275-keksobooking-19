@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 'use strict';
 // координаты адресов
 var ADDRESS_MIN_X = 100;
@@ -6,10 +5,13 @@ var ADDRESS_MAX_X = 1000;
 var ADDRESS_MIN_Y = 50;
 var ADDRESS_MAX_Y = 500;
 // координаты меток на карте
-var PIN_MIN_X = 0;
+var PIN_MIN_X = 50;
 var PIN_MAX_X = 800;
 var PIN_MIN_Y = 130;
 var PIN_MAX_Y = 630;
+// размеры пинов для расчета смещения координат
+var PIN_WIDTH = 50;
+var PIN_HEIGHT = 70;
 // другое
 var ROOM_CAPACITY = 2;
 var OFFER_COUNT = 8;
@@ -50,7 +52,7 @@ var features = [
   'parking',
   'washer',
   'elevator',
-  'conditioner',
+  'conditioner'
 ];
 
 var descriptions = [
@@ -61,7 +63,7 @@ var descriptions = [
   'Описание 5',
   'Описание 6',
   'Описание 7',
-  'Описание 8',
+  'Описание 8'
 ];
 
 var photoLinks = [
@@ -70,17 +72,17 @@ var photoLinks = [
   'http://o0.github.io/assets/images/tokyo/hotel3.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel4.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel5.jpg',
-  'http://o0.github.io/assets/images/tokyo/hotel6.jpg',
+  'http://o0.github.io/assets/images/tokyo/hotel6.jpg'
 ];
 
-// получает случайное число в заданном диапазоне +
+// получает случайное число в заданном диапазоне
 var getRandomInt = function (min, max) {
   var rand = min + Math.random() * (max + 1 - min);
 
   return Math.floor(rand);
 };
 
-// получает случайную строку из массива +
+// получает случайную строку из массива
 var getRandomItemsFromArray = function (array, string) {
   var ITEMS_COUNT = getRandomInt(0, array.length);
 
@@ -92,7 +94,7 @@ var getRandomItemsFromArray = function (array, string) {
   return string;
 };
 
-// получает максимальный индекс массива +
+// получает максимальный индекс массива
 var getMaxIndex = function (array) {
   return array.length - 1;
 };
@@ -103,12 +105,12 @@ var getImageLink = function (index) {
   return 'img/avatars/user0' + imgNum + '.png';
 };
 
-// получает заголовок предложения +
+// получает заголовок предложения
 var getTitle = function (index) {
   return titles[index];
 };
 
-// получает адрес объекта предложения +
+// получает адрес объекта предложения
 var getAddress = function () {
   var coordX = getRandomInt(ADDRESS_MIN_X, ADDRESS_MAX_X);
   var coordY = getRandomInt(ADDRESS_MIN_Y, ADDRESS_MAX_Y);
@@ -118,17 +120,17 @@ var getAddress = function () {
   return address;
 };
 
-// получает цену аренды объекта +
+// получает цену аренды объекта
 var getPrice = function () {
   return getRandomInt(0, 2000);
 };
 
-// получает тип объекта +
+// получает тип объекта
 var getType = function () {
   return flatTypes[getRandomInt(0, getMaxIndex(flatTypes))];
 };
 
-// получает количество комнат объекта +
+// получает количество комнат объекта
 var getRoomsNumber = function (type) {
   switch (type) {
     case 'bungalo':
@@ -144,43 +146,43 @@ var getRoomsNumber = function (type) {
   }
 };
 
-// получает количество гостей +
+// получает количество гостей
 var getGuestsNumber = function (rooms) {
   return ROOM_CAPACITY * rooms;
 };
 
-// получает время поступления +
+// получает время поступления
 var getCheckinTime = function () {
   return checkinTimes[getRandomInt(0, getMaxIndex(checkinTimes))];
 };
 
-// получает время убытия +
+// получает время убытия
 var getCheckoutTime = function () {
   return checkoutTimes[getRandomInt(0, getMaxIndex(checkoutTimes))];
 };
 
-// получает список удобств +
+// получает список удобств
 var getFeatures = function () {
   var featuresString = '';
 
   return getRandomItemsFromArray(features, featuresString);
 };
 
-// получает описание объекта +
+// получает описание объекта
 var getDescription = function () {
   var descriptionString = '';
 
   return getRandomItemsFromArray(descriptions, descriptionString);
 };
 
-// получает ссылки фотографий объекта +
+// получает ссылки фотографий объекта
 var getPhotos = function () {
   var linksString = '';
 
   return getRandomItemsFromArray(photoLinks, linksString);
 };
 
-// получает координаты метки +
+// получает координаты метки
 var getLocation = function () {
   var location = {};
   location.x = getRandomInt(PIN_MIN_X, PIN_MAX_X);
@@ -198,7 +200,7 @@ var createAuthor = function (index) {
   return author;
 };
 
-// создает объект предложениe
+// создает объект предложения
 var createOffer = function (index) {
   var offer = {};
 
@@ -242,25 +244,40 @@ var getMocks = function (count, array) {
 
 getMocks(OFFER_COUNT, nearbyOffers);
 
-
-// находит шаблон пина и область куда будем вставлять их
-var mapArea = document.querySelector('.map__pins');
-var pinTemplate = document.querySelector('.map__pin');
+// активируем карту
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
 
-// перебирает массив объектов и подставляет данные
-for (var j = 0; j < 8; j++) {
-  var pinElement = pinTemplate.cloneNode(true);
-  var coordLeft = nearbyOffers[j].offer.location.x + 'px; ';
-  var coordTop = nearbyOffers[j].offer.location.y + 'px; ';
+// находит шаблон пина и область куда будем вставлять их
+var mapArea = document.querySelector('.map__pins');
+var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
-  pinElement.style.cssText = 'left: ' + coordLeft + 'top: ' + coordTop;
+// получает координаты пина со смещением
+var getPinCoordinates = function (array, index) {
+  var coordLeft = array[index].offer.location.x - (PIN_WIDTH / 2);
+  var coordTop = array[index].offer.location.y - PIN_HEIGHT;
 
-  pinElement.querySelector('img').setAttribute('src', nearbyOffers[j].author.avatar);
-  pinElement.querySelector('img').setAttribute('alt', nearbyOffers[j].offer.title);
+  return 'left: ' + coordLeft + 'px; top: ' + coordTop + 'px;';
+};
 
-  mapArea.appendChild(pinElement);
-}
+// позиционирует и стилизует пин
+var setPin = function (array, element, index) {
+  element.style.cssText = getPinCoordinates(array, index);
+  element.querySelector('img').setAttribute('src', array[index].author.avatar);
+  element.querySelector('img').setAttribute('alt', array[index].offer.title);
+};
 
-console.log(nearbyOffers);
+// создает пины
+var generatePins = function (array, container) {
+  var fragment = document.createDocumentFragment();
+
+  for (var i = 0; i < array.length; i++) {
+    var pinElement = pinTemplate.cloneNode(true);
+    setPin(array, pinElement, i);
+    fragment.appendChild(pinElement);
+  }
+
+  container.appendChild(fragment);
+};
+
+generatePins(nearbyOffers, mapArea);

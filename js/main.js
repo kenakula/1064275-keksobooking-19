@@ -231,20 +231,21 @@ var createObject = function (index) {
 // создает массив похожих объявлений
 var nearbyOffers = [];
 
-var getMocks = function (count) {
+var getMocks = function (count, array) {
 
   for (var i = 0; i < count; i++) {
-    nearbyOffers.push(createObject(i));
+    array.push(createObject(i));
   }
 
-  return nearbyOffers;
+  return array;
 };
 
-getMocks(OFFER_COUNT);
+getMocks(OFFER_COUNT, nearbyOffers);
 
+
+// находит шаблон пина и область куда будем вставлять их
 var mapArea = document.querySelector('.map__pins');
 var pinTemplate = document.querySelector('.map__pin');
-// находит шаблон пина и область куда будем вставлять их
 var map = document.querySelector('.map');
 map.classList.remove('map--faded');
 

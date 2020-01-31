@@ -15,7 +15,7 @@ var PIN_HEIGHT = 70;
 // другое
 var ROOM_CAPACITY = 2;
 var OFFER_COUNT = 8;
-
+// массивы для моков
 var titles = [
   'Заголовок предложения 1',
   'Заголовок предложения 2',
@@ -75,6 +75,11 @@ var photoLinks = [
   'http://o0.github.io/assets/images/tokyo/hotel6.jpg'
 ];
 
+// находит шаблон пина и область куда будем вставлять их
+var map = document.querySelector('.map');
+var mapArea = map.querySelector('.map__pins');
+var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+
 // получает случайное число в заданном диапазоне
 var getRandomInt = function (min, max) {
   var rand = min + Math.random() * (max + 1 - min);
@@ -99,7 +104,7 @@ var getMaxIndex = function (array) {
   return array.length - 1;
 };
 
-// получает фотографию аватара автора +
+// получает фотографию аватара автора
 var getImageLink = function (index) {
   var imgNum = index + 1;
   return 'img/avatars/user0' + imgNum + '.png';
@@ -230,54 +235,43 @@ var createObject = function (index) {
   return object;
 };
 
-// создает массив похожих объявлений
-var nearbyOffers = [];
-
-var getMocks = function (count, array) {
+// поолучает массив похожих объявлений
+var getMocks = function (count) {
+  var result = [];
 
   for (var i = 0; i < count; i++) {
-    array.push(createObject(i));
+    result.push(createObject(i));
   }
 
-  return array;
-};
-
-getMocks(OFFER_COUNT, nearbyOffers);
-
-// активируем карту
-var map = document.querySelector('.map');
-map.classList.remove('map--faded');
-
-// находит шаблон пина и область куда будем вставлять их
-var mapArea = document.querySelector('.map__pins');
-var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
-
-// получает координаты пина со смещением
-var getPinCoordinates = function (array, index) {
-  var coordLeft = array[index].offer.location.x - (PIN_WIDTH / 2);
-  var coordTop = array[index].offer.location.y - PIN_HEIGHT;
-
-  return 'left: ' + coordLeft + 'px; top: ' + coordTop + 'px;';
+  return result;
 };
 
 // позиционирует и стилизует пин
-var setPin = function (array, element, index) {
-  element.style.cssText = getPinCoordinates(array, index);
-  element.querySelector('img').setAttribute('src', array[index].author.avatar);
-  element.querySelector('img').setAttribute('alt', array[index].offer.title);
+var setPin = function (data, element) {
+  var img = element.querySelector('img');
+
+  element.style.left = data.offer.location.x - (PIN_WIDTH / 2) + 'px';
+  element.style.top = data.offer.location.y - PIN_HEIGHT + 'px';
+  img.src = data.author.avatar;
+  img.alt = data.offer.title;
 };
 
-// создает пины
-var generatePins = function (array, container) {
+// создает фрагмент пинов
+var getFragment = function (data, template) {
   var fragment = document.createDocumentFragment();
 
-  for (var i = 0; i < array.length; i++) {
-    var pinElement = pinTemplate.cloneNode(true);
-    setPin(array, pinElement, i);
+  for (var i = 0; i < data.length; i++) {
+    var pinElement = template.cloneNode(true);
+    setPin(data[i], pinElement);
     fragment.appendChild(pinElement);
   }
 
-  container.appendChild(fragment);
+  return fragment;
 };
 
-generatePins(nearbyOffers, mapArea);
+map.classList.remove('map--faded');
+
+var data = getMocks(OFFER_COUNT);
+var pinsFragment = getFragment(data, pinTemplate);
+
+mapArea.appendChild(pinsFragment);

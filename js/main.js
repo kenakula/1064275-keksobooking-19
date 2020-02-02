@@ -15,6 +15,8 @@ var PIN_HEIGHT = 70;
 // другое
 var ROOM_CAPACITY = 2;
 var OFFER_COUNT = 8;
+var KEY_ENTER = 'Enter';
+var KEY_ESC = 'Escape';
 // массивы для моков
 var titles = [
   'Заголовок предложения 1',
@@ -74,11 +76,15 @@ var photoLinks = [
   'http://o0.github.io/assets/images/tokyo/hotel5.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel6.jpg'
 ];
+// DOM
 
-// находит шаблон пина и область куда будем вставлять их
 var map = document.querySelector('.map');
 var mapArea = map.querySelector('.map__pins');
+var mainPin = mapArea.querySelector('.map__pin--main');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+
+var adForm = document.querySelector('.ad-form');
+var formFields = adForm.querySelectorAll('fieldset');
 
 // получает случайное число в заданном диапазоне
 var getRandomInt = function (min, max) {
@@ -269,9 +275,30 @@ var getFragment = function (data, template) {
   return fragment;
 };
 
-map.classList.remove('map--faded');
+// деактивирует поле ввода
+var disableFormFields = function (data) {
+  if (data.length > 1) {
+    for (var i = 0; i < data.length; i++) {
+      data[i].disabled = true;
+    }
+  } else {
+    data.disabled = true;
+  }
+};
+
+// активирует страницу
+var onMainPinPress = function (evt) {
+
+  if (evt.button === 0 || evt.key === KEY_ENTER) {
+    map.classList.remove('map--faded');
+    mapArea.appendChild(pinsFragment);
+  }
+
+};
 
 var data = getMocks(OFFER_COUNT);
 var pinsFragment = getFragment(data, pinTemplate);
 
-mapArea.appendChild(pinsFragment);
+disableFormFields(formFields);
+mainPin.addEventListener('mousedown', onMainPinPress);
+mainPin.addEventListener('keydown', onMainPinPress);

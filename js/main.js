@@ -16,7 +16,6 @@ var PIN_HEIGHT = 70;
 var ROOM_CAPACITY = 2;
 var OFFER_COUNT = 8;
 var KEY_ENTER = 'Enter';
-var KEY_ESC = 'Escape';
 // массивы для моков
 var titles = [
   'Заголовок предложения 1',

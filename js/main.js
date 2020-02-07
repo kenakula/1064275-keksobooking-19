@@ -85,9 +85,10 @@ var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pi
 var adForm = document.querySelector('.ad-form');
 var formFields = adForm.querySelectorAll('fieldset');
 
-var adressInput = adForm.querySelector('#address');
-var roomNumSelect = adForm.querySelector('#room_number');
+var addressInput = adForm.querySelector('#address');
+var roomNumberSelect = adForm.querySelector('#room_number');
 var roomCapacitySelect = adForm.querySelector('#capacity');
+
 
 // получает случайное число в заданном диапазоне
 var getRandomInt = function (min, max) {
@@ -285,72 +286,76 @@ var changeFormFieldsState = function (data, boolean) {
     for (var i = 0; i < data.length; i++) {
       data[i].disabled = boolean;
     }
-  } else {
-    data.disabled = boolean;
   }
 
 };
 
 // получает координаты (адрес) метки
-var getCoord = function (pin) {
+var getCoordinates = function (pin) {
   var posX = pin.offsetLeft - (PIN_WIDTH / 2);
   var posY = pin.offsetTop - PIN_HEIGHT;
 
-  return posX + ' ' + posY;
-};
-
-// записывает координаты в строку адреса
-var writeCoords = function () {
-  adressInput.value = getCoord(mainPin);
+  return posX + ', ' + posY;
 };
 
 // активирует страницу
-var onMainPinPress = function (evt) {
-
-  if (evt.button === 0 || evt.key === KEY_ENTER) {
-    map.classList.remove('map--faded');
-    mapArea.appendChild(pinsFragment);
-    adForm.classList.remove('ad-form--disabled');
-    changeFormFieldsState(formFields, false);
-    writeCoords();
-  }
-
+var activatePage = function () {
+  map.classList.remove('map--faded');
+  mapArea.appendChild(pinsFragment);
+  adForm.classList.remove('ad-form--disabled');
+  changeFormFieldsState(formFields, false);
 };
 
-// устанавливает сообщение ощибки
-var setErrorMsg = function (element, string) {
-  element.setCustomValidity(string);
-};
+//
+var getRoomNumberSelectErrorMessage = function () {
+  var roomsNumber = roomNumberSelect.value;
+  var guestsNumber = roomCapacitySelect.value;
 
-// проверяет валидность ввода количества комнат и гостей
-var validateRoomsInput = function () {
-  var roomsNum = roomNumSelect.value;
-  var guestsNum = roomCapacitySelect.value;
-
-  if (roomsNum < guestsNum) {
-    setErrorMsg(roomCapacitySelect, 'нужно больше комнат для гостей');
-  } else if (guestsNum === '0') {
-    setErrorMsg(roomCapacitySelect, 'неверно');
-  } else {
-    setErrorMsg(roomCapacitySelect, '');
-  }
-
-  if (roomsNum === '100') {
-    if (guestsNum !== '0') {
-      setErrorMsg(roomCapacitySelect, 'не для проживания');
+  if (roomsNumber === '100') {
+    if (guestsNumber !== '0') {
+      return 'не для проживания';
     } else {
-      setErrorMsg(roomCapacitySelect, '');
+      return '';
     }
   }
 
+  if (roomsNumber < guestsNumber) {
+    return 'нужно больше комнат для гостей';
+  } else if (guestsNumber === '0') {
+    return 'неверно';
+  } else {
+    return '';
+  }
+
 };
+
+var onRoomCapacitySelectChange = function () {
+  var message = getRoomNumberSelectErrorMessage();
+
+  if (message) {
+    roomCapacitySelect.setCustomValidity(message);
+  } else {
+    roomCapacitySelect.setCustomValidity('');
+  }
+
+};
+
+changeFormFieldsState(formFields, true);
+mainPin.addEventListener('mousedown', function (evt) {
+  if (evt.button === 0) {
+    activatePage(evt);
+  }
+});
+
+mainPin.addEventListener('keydown', function (evt) {
+  if (evt.key === KEY_ENTER) {
+    activatePage(evt);
+  }
+});
+
+roomCapacitySelect.addEventListener('change', onRoomCapacitySelectChange);
+roomNumberSelect.addEventListener('change', onRoomCapacitySelectChange);
 
 var data = getMocks(OFFER_COUNT);
 var pinsFragment = getFragment(data, pinTemplate);
-
-changeFormFieldsState(formFields, true);
-mainPin.addEventListener('mousedown', onMainPinPress);
-mainPin.addEventListener('keydown', onMainPinPress);
-
-roomCapacitySelect.addEventListener('change', validateRoomsInput);
-roomNumSelect.addEventListener('change', validateRoomsInput);
+addressInput.value = getCoordinates(mainPin);

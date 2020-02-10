@@ -16,6 +16,7 @@ var PIN_HEIGHT = 70;
 var ROOM_CAPACITY = 2;
 var OFFER_COUNT = 8;
 var KEY_ENTER = 'Enter';
+var NOT_FOR_RESIDENCE_ROOMS_NUMBER = '100';
 // массивы для моков
 var titles = [
   'Заголовок предложения 1',
@@ -281,13 +282,9 @@ var getFragment = function (data, template) {
 
 // деактивирует поле ввода
 var changeFormFieldsState = function (data, boolean) {
-
-  if (data.length > 1) {
-    for (var i = 0; i < data.length; i++) {
-      data[i].disabled = boolean;
-    }
+  for (var i = 0; i < data.length; i++) {
+    data[i].disabled = boolean;
   }
-
 };
 
 // получает координаты (адрес) метки
@@ -306,27 +303,26 @@ var activatePage = function () {
   changeFormFieldsState(formFields, false);
 };
 
-//
+// валидация ввода количества комнат и гостей
 var getRoomNumberSelectErrorMessage = function () {
   var roomsNumber = roomNumberSelect.value;
   var guestsNumber = roomCapacitySelect.value;
 
-  if (roomsNumber === '100') {
-    if (guestsNumber !== '0') {
-      return 'не для проживания';
-    } else {
-      return '';
-    }
+  if (roomsNumber === NOT_FOR_RESIDENCE_ROOMS_NUMBER && guestsNumber !== '0') {
+    return 'не для проживания';
+  }
+
+  if (roomsNumber === NOT_FOR_RESIDENCE_ROOMS_NUMBER && guestsNumber === '0') {
+    return '';
   }
 
   if (roomsNumber < guestsNumber) {
     return 'нужно больше комнат для гостей';
   } else if (guestsNumber === '0') {
     return 'неверно';
-  } else {
-    return '';
   }
 
+  return '';
 };
 
 var onRoomCapacitySelectChange = function () {
@@ -340,18 +336,20 @@ var onRoomCapacitySelectChange = function () {
 
 };
 
-changeFormFieldsState(formFields, true);
-mainPin.addEventListener('mousedown', function (evt) {
-  if (evt.button === 0) {
-    activatePage(evt);
-  }
-});
+var onMainPinClick = function () {
+  activatePage();
+};
 
-mainPin.addEventListener('keydown', function (evt) {
+var onMainPinPress = function (evt) {
   if (evt.key === KEY_ENTER) {
-    activatePage(evt);
+    activatePage();
   }
-});
+};
+
+changeFormFieldsState(formFields, true);
+
+mainPin.addEventListener('mousedown', onMainPinClick);
+mainPin.addEventListener('keydown', onMainPinPress);
 
 roomCapacitySelect.addEventListener('change', onRoomCapacitySelectChange);
 roomNumberSelect.addEventListener('change', onRoomCapacitySelectChange);

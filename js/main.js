@@ -15,6 +15,8 @@ var PIN_HEIGHT = 70;
 // другое
 var ROOM_CAPACITY = 2;
 var OFFER_COUNT = 8;
+var KEY_ENTER = 'Enter';
+var NOT_FOR_RESIDENCE_ROOMS_NUMBER = '100';
 // массивы для моков
 var titles = [
   'Заголовок предложения 1',
@@ -74,11 +76,20 @@ var photoLinks = [
   'http://o0.github.io/assets/images/tokyo/hotel5.jpg',
   'http://o0.github.io/assets/images/tokyo/hotel6.jpg'
 ];
+// DOM
 
-// находит шаблон пина и область куда будем вставлять их
 var map = document.querySelector('.map');
 var mapArea = map.querySelector('.map__pins');
+var mainPin = mapArea.querySelector('.map__pin--main');
 var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
+
+var adForm = document.querySelector('.ad-form');
+var formFields = adForm.querySelectorAll('fieldset');
+
+var addressInput = adForm.querySelector('#address');
+var roomNumberSelect = adForm.querySelector('#room_number');
+var roomCapacitySelect = adForm.querySelector('#capacity');
+
 
 // получает случайное число в заданном диапазоне
 var getRandomInt = function (min, max) {
@@ -269,9 +280,80 @@ var getFragment = function (data, template) {
   return fragment;
 };
 
-map.classList.remove('map--faded');
+// деактивирует поле ввода
+var changeFormFieldsState = function (data, boolean) {
+  for (var i = 0; i < data.length; i++) {
+    data[i].disabled = boolean;
+  }
+};
+
+// получает координаты (адрес) метки
+var getCoordinates = function (pin) {
+  var posX = pin.offsetLeft - (PIN_WIDTH / 2);
+  var posY = pin.offsetTop - PIN_HEIGHT;
+
+  return posX + ', ' + posY;
+};
+
+// активирует страницу
+var activatePage = function () {
+  map.classList.remove('map--faded');
+  mapArea.appendChild(pinsFragment);
+  adForm.classList.remove('ad-form--disabled');
+  changeFormFieldsState(formFields, false);
+};
+
+// валидация ввода количества комнат и гостей
+var getRoomNumberSelectErrorMessage = function () {
+  var roomsNumber = roomNumberSelect.value;
+  var guestsNumber = roomCapacitySelect.value;
+
+  if (roomsNumber === NOT_FOR_RESIDENCE_ROOMS_NUMBER && guestsNumber !== '0') {
+    return 'не для проживания';
+  }
+
+  if (roomsNumber === NOT_FOR_RESIDENCE_ROOMS_NUMBER && guestsNumber === '0') {
+    return '';
+  }
+
+  if (roomsNumber < guestsNumber) {
+    return 'нужно больше комнат для гостей';
+  } else if (guestsNumber === '0') {
+    return 'неверно';
+  }
+
+  return '';
+};
+
+var onRoomCapacitySelectChange = function () {
+  var message = getRoomNumberSelectErrorMessage();
+
+  if (message) {
+    roomCapacitySelect.setCustomValidity(message);
+  } else {
+    roomCapacitySelect.setCustomValidity('');
+  }
+
+};
+
+var onMainPinClick = function () {
+  activatePage();
+};
+
+var onMainPinPress = function (evt) {
+  if (evt.key === KEY_ENTER) {
+    activatePage();
+  }
+};
+
+changeFormFieldsState(formFields, true);
+
+mainPin.addEventListener('mousedown', onMainPinClick);
+mainPin.addEventListener('keydown', onMainPinPress);
+
+roomCapacitySelect.addEventListener('change', onRoomCapacitySelectChange);
+roomNumberSelect.addEventListener('change', onRoomCapacitySelectChange);
 
 var data = getMocks(OFFER_COUNT);
 var pinsFragment = getFragment(data, pinTemplate);
-
-mapArea.appendChild(pinsFragment);
+addressInput.value = getCoordinates(mainPin);

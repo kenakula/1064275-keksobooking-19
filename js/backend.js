@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 'use strict';
 
 (function () {
@@ -13,6 +12,17 @@
     GATEWAY_TIMEOUT: 504,
   };
 
+  var createXhr = function (method, onSuccess, onError) {
+    var xhr = new XMLHttpRequest();
+    xhr.responseType = RESPONSE_TYPE;
+    xhr.timeout = TIMEOUT_IN_MS;
+
+    responseHandler(xhr, onSuccess, onError);
+
+    xhr.open(method, DOWNLOAD_URL);
+    xhr.send();
+  };
+
   var responseHandler = function (xhr, onLoad, onError) {
     xhr.addEventListener('load', function () {
       switch (xhr.status) {
@@ -23,7 +33,7 @@
           onError('Запрашиваемыe данные не существуют!');
           break;
         case ResponseCode.UNAVAILABLE:
-          onError('Ошибка сервера, побробуйте снова позже');
+          onError('Ошибка сервера, попробуйте снова позже');
           break;
         case ResponseCode.GATEWAY_TIMEOUT:
           onError('Слишком долгое ожидание ответа сервера, возможно медленное интернет-соединение');
@@ -43,14 +53,7 @@
   };
 
   window.backend.load = function (onSuccess, onError) {
-    var xhr = new XMLHttpRequest();
-    xhr.responseType = RESPONSE_TYPE;
-    xhr.timeout = TIMEOUT_IN_MS;
-
-    responseHandler(xhr, onSuccess, onError);
-
-    xhr.open('GET', DOWNLOAD_URL);
-    xhr.send();
+    createXhr('GET', onSuccess, onError);
   };
 
   window.backend.upload = function (data, onSuccess, onError) {

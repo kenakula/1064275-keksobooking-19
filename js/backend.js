@@ -3,6 +3,8 @@
 (function () {
   var TIMEOUT_IN_MS = 10000;
   var RESPONSE_TYPE = 'json';
+  var GET_METHOD = 'GET';
+  // var POST_METHOD = 'POST';
   var DOWNLOAD_URL = 'https://js.dump.academy/keksobooking/data';
   window.backend = {};
   var ResponseCode = {
@@ -12,14 +14,14 @@
     GATEWAY_TIMEOUT: 504,
   };
 
-  var createXhr = function (method, onSuccess, onError) {
+  var createXhr = function (method, onSuccess, onError, link) {
     var xhr = new XMLHttpRequest();
     xhr.responseType = RESPONSE_TYPE;
     xhr.timeout = TIMEOUT_IN_MS;
 
     responseHandler(xhr, onSuccess, onError);
 
-    xhr.open(method, DOWNLOAD_URL);
+    xhr.open(method, link);
     xhr.send();
   };
 
@@ -53,7 +55,7 @@
   };
 
   window.backend.load = function (onSuccess, onError) {
-    createXhr('GET', onSuccess, onError);
+    createXhr(GET_METHOD, onSuccess, onError, DOWNLOAD_URL);
   };
 
   window.backend.upload = function (data, onSuccess, onError) {

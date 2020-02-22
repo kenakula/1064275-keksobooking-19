@@ -13,6 +13,9 @@
   var mainPin = mapArea.querySelector('.map__pin--main');
   var pinTemplate = document.querySelector('#pin').content.querySelector('.map__pin');
 
+  var filterForm = document.querySelector('.map__filters');
+  var housingTypeSelect = filterForm.querySelector('#housing-type');
+
   // деактивирует поле ввода
   var changeFormFieldsState = function (data, boolean) {
     for (var i = 0; i < data.length; i++) {
@@ -37,7 +40,7 @@
     }
   };
 
-  var renderPin = function (dataPin) {
+  var setPin = function (dataPin) {
     var pinElement = pinTemplate.cloneNode(true);
     var img = pinElement.querySelector('img');
 
@@ -49,35 +52,41 @@
     return pinElement;
   };
 
-  var successHandler = function (dataPins) {
+  var clearPins = function () {
+    var offerPins = mapArea.querySelectorAll('.map__pin:not(.map__pin--main)');
+
+    offerPins.forEach(function (it) {
+      mapArea.removeChild(it);
+    });
+  };
+
+  var renderPins = function () {
+    var pins = window.dataPins;
+
+    if (housingTypeSelect.value !== 'any') {
+      pins = window.filter.houseType(pins);
+    }
+
     var fragment = document.createDocumentFragment();
 
-    for (var i = 0; i < dataPins.length; i++) {
-      var getRandomPin = dataPins[i];
+    var dataCopy = pins.slice(0, 5);
 
-      fragment.appendChild(renderPin(getRandomPin));
-    }
+    dataCopy.forEach(function (it) {
+      fragment.appendChild(setPin(it));
+    });
 
     mapArea.appendChild(fragment);
   };
 
-  var errorHandler = function (errorMessage) {
-    var node = document.createElement('div');
-
-    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
-    node.style.position = 'absolute';
-    node.style.left = 0;
-    node.style.right = 0;
-    node.style.fontSize = '30px';
-
-    node.textContent = errorMessage;
-    document.body.insertAdjacentElement('afterbegin', node);
+  var updatePins = function () {
+    clearPins();
+    renderPins();
   };
 
   // активирует страницу
   var activatePage = function () {
     map.classList.remove('map--faded');
-    window.backend.load(successHandler, errorHandler);
+    renderPins();
     adForm.classList.remove('ad-form--disabled');
     changeFormFieldsState(formFields, false);
   };
@@ -88,5 +97,7 @@
 
   mainPin.addEventListener('mousedown', onMainPinClick);
   mainPin.addEventListener('keydown', onMainPinPress);
+
+  housingTypeSelect.addEventListener('change', updatePins);
 
 })();

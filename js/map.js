@@ -60,8 +60,7 @@
     });
   };
 
-  var renderPins = function () {
-    var pins = window.dataPins;
+  var renderPins = function (pins) {
 
     if (housingTypeSelect.value !== 'any') {
       pins = window.filter.houseType(pins);
@@ -80,13 +79,13 @@
 
   var updatePins = function () {
     clearPins();
-    renderPins();
+    renderPins(window.dataPins);
   };
 
   // активирует страницу
   var activatePage = function () {
     map.classList.remove('map--faded');
-    renderPins();
+    renderPins(window.dataPins);
     adForm.classList.remove('ad-form--disabled');
     changeFormFieldsState(formFields, false);
   };

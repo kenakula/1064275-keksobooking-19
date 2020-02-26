@@ -74,11 +74,11 @@
     });
   };
 
-  var renderPins = function () {
+  var renderPins = function (data) {
     var fragment = document.createDocumentFragment();
-    var pins = window.filter.filterPins();
+    var pins = data.slice(0, 5);
 
-    pins.slice(0, 5).forEach(function (it) {
+    pins.forEach(function (it) {
       fragment.appendChild(setPin(it));
     });
 
@@ -86,15 +86,17 @@
   };
 
   var updatePins = function () {
+    var filteredPins = window.filter.filterPins();
+
     clearPins();
-    renderPins();
+    renderPins(filteredPins);
   };
 
   // активирует страницу
   var activatePage = function () {
     map.classList.remove('map--faded');
     activateFilters();
-    renderPins();
+    renderPins(window.dataPins);
     adForm.classList.remove('ad-form--disabled');
     changeFormFieldsState(formFields, false);
   };

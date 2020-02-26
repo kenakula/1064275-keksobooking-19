@@ -23,7 +23,6 @@
   var housingRoomsSelect = filterForm.querySelector('#housing-rooms');
   var housingGuestsSelect = filterForm.querySelector('#housing-guests');
 
-  // деактивирует поле ввода
   var changeFormFieldsState = function (data, boolean) {
     for (var i = 0; i < data.length; i++) {
       data[i].disabled = boolean;
@@ -75,30 +74,11 @@
     });
   };
 
-  var filterPins = function () {
-    var newPins = window.dataPins;
-    var features = window.util.getSelectedFeaturesList();
-
-    if (housingTypeSelect.value !== 'any') {
-      newPins = window.filter.houseType(newPins);
-    }
-
-    newPins = window.filter.housePrice(newPins);
-    newPins = window.filter.houseRooms(newPins);
-    newPins = window.filter.houseGuests(newPins);
-
-    if (features.length > 0) {
-      newPins = window.filter.featuresFilter(newPins);
-    }
-
-    return newPins.slice(0, 5);
-  };
-
   var renderPins = function () {
     var fragment = document.createDocumentFragment();
-    var pins = filterPins();
+    var pins = window.filter.filterPins();
 
-    pins.forEach(function (it) {
+    pins.slice(0, 5).forEach(function (it) {
       fragment.appendChild(setPin(it));
     });
 
@@ -114,7 +94,7 @@
   var activatePage = function () {
     map.classList.remove('map--faded');
     activateFilters();
-    renderPins(window.dataPins.slice(0, 5));
+    renderPins();
     adForm.classList.remove('ad-form--disabled');
     changeFormFieldsState(formFields, false);
   };

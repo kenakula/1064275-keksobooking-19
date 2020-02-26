@@ -31,12 +31,13 @@
 
   var getSelectedFeaturesList = function () {
     var selected = housingFeatures.querySelectorAll('input:checked');
-    var arr = [];
-    selected.forEach(function (it) {
-      arr.push(it.value);
+    var array = Array.from(selected);
+
+    var newArray = array.map(function (it) {
+      return it.value;
     });
 
-    return arr;
+    return newArray;
   };
 
   window.util = {

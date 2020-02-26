@@ -1,11 +1,14 @@
 'use strict';
 (function () {
+  var DEFAULT_FILTER_STATE = 'any';
 
   var filterForm = document.querySelector('.map__filters');
   var housingTypeSelect = filterForm.querySelector('#housing-type');
   var housingPriceSelect = filterForm.querySelector('#housing-price');
   var housingRoomsSelect = filterForm.querySelector('#housing-rooms');
   var housingGuestsSelect = filterForm.querySelector('#housing-guests');
+
+  window.filter = {};
 
   var successHandler = function (data) {
     window.dataPins = data;
@@ -33,7 +36,6 @@
   };
 
   var housePriceFilter = function (data) {
-
     var newData = data.filter(function (pin) {
       var price = pin.offer.price;
 
@@ -42,10 +44,8 @@
           return price > 50000;
         case 'low':
           return price < 10000;
-        case 'middle':
-          return price >= 10000 && price <= 50000;
         default:
-          return true;
+          return price >= 10000 && price <= 50000;
       }
 
     });
@@ -62,10 +62,8 @@
           return roomsCount === 1;
         case '2':
           return roomsCount === 2;
-        case '3':
-          return roomsCount === 3;
         default:
-          return true;
+          return roomsCount === 3;
       }
 
     });
@@ -82,10 +80,8 @@
           return guestsCount === 1;
         case '2':
           return guestsCount === 2;
-        case '0':
-          return guestsCount > 6;
         default:
-          return true;
+          return guestsCount > 6;
       }
 
     });
@@ -94,25 +90,43 @@
   };
 
   var featuresFilter = function (data) {
-    var selectedFeatures = window.util.getSelectedFeaturesList(); // массив выбранных пользователем особенностей
-
+    var selectedFeatures = window.util.getSelectedFeaturesList();
     var newData = data.filter(function (pin) {
       return selectedFeatures.every(function (it) {
-        pin.offer.features.includes(it);
+        return pin.offer.features.includes(it);
       });
     });
 
     return newData;
   };
 
-  window.backend.load(successHandler, errorHandler);
+  window.filter.filterPins = function () {
+    var newPins = window.dataPins;
+    var selectedFeatures = window.util.getSelectedFeaturesList();
 
-  window.filter = {
-    houseType: houseTypeFilter,
-    housePrice: housePriceFilter,
-    houseRooms: housingRoomsFilter,
-    houseGuests: housingGuestsFilter,
-    featuresFilter: featuresFilter,
+    if (housingTypeSelect.value !== DEFAULT_FILTER_STATE) {
+      newPins = houseTypeFilter(newPins);
+    }
+
+    if (housingPriceSelect.value !== DEFAULT_FILTER_STATE) {
+      newPins = housePriceFilter(newPins);
+    }
+
+    if (housingRoomsSelect.value !== DEFAULT_FILTER_STATE) {
+      newPins = housingRoomsFilter(newPins);
+    }
+
+    if (housingGuestsSelect.value !== DEFAULT_FILTER_STATE) {
+      newPins = housingGuestsFilter(newPins);
+    }
+
+    if (selectedFeatures.length > 0) {
+      newPins = featuresFilter(newPins);
+    }
+
+    return newPins;
   };
+
+  window.backend.load(successHandler, errorHandler);
 
 })();

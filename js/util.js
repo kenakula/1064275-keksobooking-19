@@ -1,6 +1,8 @@
 'use strict';
 
 (function () {
+  var filterForm = document.querySelector('.map__filters');
+  var housingFeatures = filterForm.querySelector('#housing-features');
 
   var getRandomInt = function (min, max) {
     var rand = min + Math.random() * (max + 1 - min);
@@ -27,11 +29,23 @@
     return string;
   };
 
+  var getSelectedFeaturesList = function () {
+    var selected = housingFeatures.querySelectorAll('input:checked');
+    var array = Array.from(selected);
+
+    var newArray = array.map(function (it) {
+      return it.value;
+    });
+
+    return newArray;
+  };
+
   window.util = {
     getRandomInt: getRandomInt,
     getMaxIndex: getMaxIndex,
     getRandomItemFromArray: getRandomItemFromArray,
     getRandomItemsFromArray: getRandomItemsFromArray,
+    getSelectedFeaturesList: getSelectedFeaturesList,
   };
 
 })();

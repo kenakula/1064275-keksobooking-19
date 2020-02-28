@@ -4,6 +4,7 @@
   var KEY_ENTER = 'Enter';
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
+  var DEBOUNCE_INTERVAL = 500;
 
   var adForm = document.querySelector('.ad-form');
   var formFields = adForm.querySelectorAll('fieldset');
@@ -87,9 +88,16 @@
 
   var updatePins = function () {
     var filteredPins = window.filter.filterPins();
+    var lastTimeout;
 
-    clearPins();
-    renderPins(filteredPins);
+    if (lastTimeout) {
+      window.clearTimeout(lastTimeout);
+    }
+
+    lastTimeout = window.setTimeout(function () {
+      clearPins();
+      renderPins(filteredPins);
+    }, DEBOUNCE_INTERVAL);
   };
 
   // активирует страницу

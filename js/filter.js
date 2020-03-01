@@ -1,8 +1,8 @@
 'use strict';
 (function () {
   var DEFAULT_FILTER_STATE = 'any';
-  var MAX_HOUSE_PRICE = 50000;
-  var MIN_HOUSE_PRICE = 10000;
+  var HIGH_HOUSE_PRICE = 50000;
+  var LOW_HOUSE_PRICE = 10000;
 
   var filterForm = document.querySelector('.map__filters');
   var housingTypeSelect = filterForm.querySelector('#housing-type');
@@ -43,11 +43,11 @@
 
       switch (housingPriceSelect.value) {
         case 'high':
-          return price > MAX_HOUSE_PRICE;
+          return price > HIGH_HOUSE_PRICE;
         case 'low':
-          return price < MIN_HOUSE_PRICE;
+          return price < LOW_HOUSE_PRICE;
         default:
-          return price >= MIN_HOUSE_PRICE && price <= MAX_HOUSE_PRICE;
+          return price >= LOW_HOUSE_PRICE && price <= HIGH_HOUSE_PRICE;
       }
 
     });

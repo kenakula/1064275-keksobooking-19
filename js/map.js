@@ -4,6 +4,7 @@
   var KEY_ENTER = 'Enter';
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
+  var MAX_PINS_COUNT_ON_MAP = 5;
 
   var adForm = document.querySelector('.ad-form');
   var formFields = adForm.querySelectorAll('fieldset');
@@ -15,13 +16,23 @@
 
   var filterForm = document.querySelector('.map__filters');
   var filterSelects = filterForm.querySelectorAll('select, fieldset');
-  var housingFeatures = filterForm.querySelector('#housing-features');
-  var featuresInputs = housingFeatures.querySelectorAll('input');
 
-  var housingTypeSelect = filterForm.querySelector('#housing-type');
-  var housingPriceSelect = filterForm.querySelector('#housing-price');
-  var housingRoomsSelect = filterForm.querySelector('#housing-rooms');
-  var housingGuestsSelect = filterForm.querySelector('#housing-guests');
+  var successHandler = function (data) {
+    window.dataPins = data;
+  };
+
+  var errorHandler = function (errorMessage) {
+    var node = document.createElement('div');
+
+    node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: red;';
+    node.style.position = 'absolute';
+    node.style.left = 0;
+    node.style.right = 0;
+    node.style.fontSize = '30px';
+
+    node.textContent = errorMessage;
+    document.body.insertAdjacentElement('afterbegin', node);
+  };
 
   var changeFormFieldsState = function (data, boolean) {
     for (var i = 0; i < data.length; i++) {
@@ -45,6 +56,15 @@
       activatePage();
     }
   };
+
+  var onFilterFormChange = window.debounce(function (evt) {
+    var select = evt.target;
+
+    if (select) {
+      updatePins();
+    }
+
+  });
 
   var activateFilters = function () {
     if (window.dataPins) {
@@ -76,9 +96,8 @@
 
   var renderPins = function (data) {
     var fragment = document.createDocumentFragment();
-    var pins = data.slice(0, 5);
 
-    pins.forEach(function (it) {
+    data.forEach(function (it) {
       fragment.appendChild(setPin(it));
     });
 
@@ -86,17 +105,15 @@
   };
 
   var updatePins = function () {
-    var filteredPins = window.filter.filterPins();
-
+    var filteredPins = window.filterPins(window.dataPins);
     clearPins();
-    renderPins(filteredPins);
+    renderPins(filteredPins.slice(0, MAX_PINS_COUNT_ON_MAP));
   };
 
-  // активирует страницу
   var activatePage = function () {
     map.classList.remove('map--faded');
     activateFilters();
-    renderPins(window.dataPins);
+    renderPins(window.dataPins.slice(0, MAX_PINS_COUNT_ON_MAP));
     adForm.classList.remove('ad-form--disabled');
     changeFormFieldsState(formFields, false);
   };
@@ -108,13 +125,8 @@
   mainPin.addEventListener('mousedown', onMainPinClick);
   mainPin.addEventListener('keydown', onMainPinPress);
 
-  housingTypeSelect.addEventListener('change', updatePins);
-  housingPriceSelect.addEventListener('change', updatePins);
-  housingRoomsSelect.addEventListener('change', updatePins);
-  housingGuestsSelect.addEventListener('change', updatePins);
+  filterForm.addEventListener('change', onFilterFormChange);
 
-  featuresInputs.forEach(function (it) {
-    it.addEventListener('change', updatePins);
-  });
+  window.backend.load(successHandler, errorHandler);
 
 })();

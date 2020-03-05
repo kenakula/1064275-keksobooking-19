@@ -77,9 +77,12 @@
   var setPin = function (dataPin) {
     var pinElement = pinTemplate.cloneNode(true);
     var img = pinElement.querySelector('img');
+    var index = window.dataPins.indexOf(dataPin);
 
+    pinElement.setAttribute('data-index', index);
     pinElement.style.left = dataPin.location.x - (PIN_WIDTH / 2) + 'px';
     pinElement.style.top = dataPin.location.y - PIN_HEIGHT + 'px';
+    pinElement.addEventListener('click', window.card.onOfferPinClick);
     img.src = dataPin.author.avatar;
     img.alt = dataPin.offer.title;
 
@@ -106,6 +109,7 @@
 
   var updatePins = function () {
     var filteredPins = window.filterPins(window.dataPins);
+    window.card.closeCard();
     clearPins();
     renderPins(filteredPins.slice(0, MAX_PINS_COUNT_ON_MAP));
   };

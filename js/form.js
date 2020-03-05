@@ -2,13 +2,37 @@
 
 (function () {
   var NOT_FOR_RESIDENCE_ROOMS_NUMBER = '100';
+  var MIN_FLAT_PRICE = 1000;
+  var MIN_HOUSE_PRICE = 5000;
+  var MIN_PALACE_PRICE = 10000;
 
   var adForm = document.querySelector('.ad-form');
   var roomNumberSelect = adForm.querySelector('#room_number');
   var roomCapacitySelect = adForm.querySelector('#capacity');
   var titleInput = adForm.querySelector('#title');
+  var houseTypeSelect = adForm.querySelector('#type');
+  var priceInput = adForm.querySelector('#price');
 
-  var getTitleInputMessage = function () {
+  var getHouseTypeErrorMessage = function () {
+    var houseType = houseTypeSelect.value;
+    var price = priceInput.value;
+
+    if (houseType === 'flat' && price < MIN_FLAT_PRICE) {
+      return 'Цена за ночь для квартиры должна быть не меньшее ' + MIN_FLAT_PRICE;
+    }
+
+    if (houseType === 'house' && price < MIN_HOUSE_PRICE) {
+      return 'Цена за ночь для дома должна быть не меньшее ' + MIN_HOUSE_PRICE;
+    }
+
+    if (houseType === 'palace' && price < MIN_PALACE_PRICE) {
+      return 'Цена за ночь для дворца должна быть не меньшее ' + MIN_PALACE_PRICE;
+    }
+
+    return '';
+  };
+
+  var getTitleInputErrorMessage = function () {
     var title = titleInput.value;
     var min = titleInput.getAttribute('min');
     var max = titleInput.getAttribute('max');
@@ -51,14 +75,22 @@
   };
 
   var onTitleInputChange = function () {
-    var message = getTitleInputMessage();
+    var message = getTitleInputErrorMessage();
     titleInput.setCustomValidity(message);
+  };
+
+  var onHouseTypeInputChange = function () {
+    var message = getHouseTypeErrorMessage();
+    houseTypeSelect.setCustomValidity(message);
   };
 
   roomCapacitySelect.addEventListener('change', onRoomCapacitySelectChange);
   roomNumberSelect.addEventListener('change', onRoomCapacitySelectChange);
 
   titleInput.addEventListener('change', onTitleInputChange);
+
+  houseTypeSelect.addEventListener('change', onHouseTypeInputChange);
+  priceInput.addEventListener('change', onHouseTypeInputChange);
 })();
 
 

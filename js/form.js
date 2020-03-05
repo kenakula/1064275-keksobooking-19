@@ -6,6 +6,23 @@
   var adForm = document.querySelector('.ad-form');
   var roomNumberSelect = adForm.querySelector('#room_number');
   var roomCapacitySelect = adForm.querySelector('#capacity');
+  var titleInput = adForm.querySelector('#title');
+
+  var getTitleInputMessage = function () {
+    var title = titleInput.value;
+    var min = titleInput.getAttribute('min');
+    var max = titleInput.getAttribute('max');
+
+    if (title.length < min) {
+      return 'Заголовок предложения должен содержать не менее 30 символов';
+    }
+
+    if (title.length > max) {
+      return 'Заголовок предложения должен содержать не более 100 символов';
+    }
+
+    return '';
+  };
 
   var getRoomNumberSelectErrorMessage = function () {
     var roomsNumber = roomNumberSelect.value;
@@ -33,8 +50,15 @@
     roomCapacitySelect.setCustomValidity(message);
   };
 
+  var onTitleInputChange = function () {
+    var message = getTitleInputMessage();
+    titleInput.setCustomValidity(message);
+  };
+
   roomCapacitySelect.addEventListener('change', onRoomCapacitySelectChange);
   roomNumberSelect.addEventListener('change', onRoomCapacitySelectChange);
+
+  titleInput.addEventListener('change', onTitleInputChange);
 })();
 
 

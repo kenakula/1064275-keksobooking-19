@@ -5,6 +5,7 @@
   var MIN_FLAT_PRICE = 1000;
   var MIN_HOUSE_PRICE = 5000;
   var MIN_PALACE_PRICE = 10000;
+  var MAX_OFFER_PRICE = 1000000;
 
   var adForm = document.querySelector('.ad-form');
   var roomNumberSelect = adForm.querySelector('#room_number');
@@ -12,6 +13,16 @@
   var titleInput = adForm.querySelector('#title');
   var houseTypeSelect = adForm.querySelector('#type');
   var priceInput = adForm.querySelector('#price');
+
+  var getPriceInputErrorMessage = function () {
+    var price = priceInput.value;
+
+    if (price > MAX_OFFER_PRICE) {
+      return 'Цена предложения не должна быть более ' + MAX_OFFER_PRICE;
+    }
+
+    return '';
+  };
 
   var getHouseTypeErrorMessage = function () {
     var houseType = houseTypeSelect.value;
@@ -84,6 +95,11 @@
     houseTypeSelect.setCustomValidity(message);
   };
 
+  var onPriceInputChange = function () {
+    var message = getPriceInputErrorMessage();
+    priceInput.setCustomValidity(message);
+  };
+
   roomCapacitySelect.addEventListener('change', onRoomCapacitySelectChange);
   roomNumberSelect.addEventListener('change', onRoomCapacitySelectChange);
 
@@ -91,6 +107,7 @@
 
   houseTypeSelect.addEventListener('change', onHouseTypeInputChange);
   priceInput.addEventListener('change', onHouseTypeInputChange);
+  priceInput.addEventListener('change', onPriceInputChange);
 })();
 
 

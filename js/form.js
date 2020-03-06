@@ -13,6 +13,18 @@
   var titleInput = adForm.querySelector('#title');
   var houseTypeSelect = adForm.querySelector('#type');
   var priceInput = adForm.querySelector('#price');
+  var checkinTimeSelect = adForm.querySelector('#timein');
+  var checkoutTimeSelect = adForm.querySelector('#timeout');
+
+  var synchronizeCheckout = function () {
+    var checkinIndex = checkinTimeSelect.selectedIndex;
+    checkoutTimeSelect.options[checkinIndex].selected = true;
+  };
+
+  var synchronizeCheckin = function () {
+    var checkoutIndex = checkoutTimeSelect.selectedIndex;
+    checkinTimeSelect.options[checkoutIndex].selected = true;
+  };
 
   var getPriceInputErrorMessage = function () {
     var price = priceInput.value;
@@ -108,6 +120,8 @@
   houseTypeSelect.addEventListener('change', onHouseTypeInputChange);
   priceInput.addEventListener('change', onHouseTypeInputChange);
   priceInput.addEventListener('change', onPriceInputChange);
+  checkinTimeSelect.addEventListener('change', synchronizeCheckout);
+  checkoutTimeSelect.addEventListener('change', synchronizeCheckin);
 })();
 
 

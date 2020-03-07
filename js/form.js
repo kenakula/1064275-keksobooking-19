@@ -6,6 +6,7 @@
   var MIN_HOUSE_PRICE = 5000;
   var MIN_PALACE_PRICE = 10000;
   var MAX_OFFER_PRICE = 1000000;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   var adForm = document.querySelector('.ad-form');
   var roomNumberSelect = adForm.querySelector('#room_number');
@@ -15,6 +16,77 @@
   var priceInput = adForm.querySelector('#price');
   var checkinTimeSelect = adForm.querySelector('#timein');
   var checkoutTimeSelect = adForm.querySelector('#timeout');
+  var avatarFileChooser = adForm.querySelector('#avatar');
+  var imagesFileChooser = adForm.querySelector('#images');
+
+  var previewAvatar = adForm.querySelector('.ad-form-header__preview img');
+  var photosContainer = adForm.querySelector('.ad-form__photo-container');
+  var photoWrapper = photosContainer.querySelector('.ad-form__photo');
+  var photoUploader = adForm.querySelector('.ad-form__upload');
+
+  var fileMatches = function (elem) {
+    var file = elem.files[0];
+    var fileName = file.name.toLowerCase();
+
+    return FILE_TYPES.some(function (it) {
+      return fileName.endsWith(it);
+    });
+  };
+
+  var setAvatar = function (evt) {
+    var reader = new FileReader();
+    reader.addEventListener('load', function () {
+      previewAvatar.src = reader.result;
+    });
+    reader.readAsDataURL(evt.target.files[0]);
+  };
+
+  var setPhoto = function (evt, elem) {
+    var reader = new FileReader();
+    reader.addEventListener('load', function () {
+      elem.src = reader.result;
+      elem.setAttribute('width', '45');
+      elem.setAttribute('height', '40');
+      elem.setAttribute('alt', 'Фотография жилья');
+    });
+    reader.readAsDataURL(evt.target.files[0]);
+  };
+
+  var createPhoto = function (evt) {
+    var elem = document.createElement('img');
+    var wrapper = photoWrapper.cloneNode();
+    photoWrapper.remove();
+    setPhoto(evt, elem);
+    wrapper.appendChild(elem);
+    photoUploader.after(wrapper);
+  };
+
+  var validateImagesChooser = function (evt) {
+    var matches = fileMatches(evt.target);
+    var message = '';
+
+    if (matches) {
+      createPhoto(evt);
+    } else {
+      message = 'Для фотографии подойдет только изображение';
+    }
+
+    imagesFileChooser.setCustomValidity(message);
+
+  };
+
+  var valiateAvatarChooser = function (evt) {
+    var matches = fileMatches(evt.target);
+    var message = '';
+
+    if (matches) {
+      setAvatar(evt);
+    } else {
+      message = 'Для аватара подойдет только изображение';
+    }
+
+    avatarFileChooser.setCustomValidity(message);
+  };
 
   var synchronizeCheckout = function () {
     var checkinIndex = checkinTimeSelect.selectedIndex;
@@ -122,6 +194,9 @@
   priceInput.addEventListener('change', onPriceInputChange);
   checkinTimeSelect.addEventListener('change', synchronizeCheckout);
   checkoutTimeSelect.addEventListener('change', synchronizeCheckin);
+
+  avatarFileChooser.addEventListener('change', valiateAvatarChooser);
+  imagesFileChooser.addEventListener('change', validateImagesChooser);
 })();
 
 

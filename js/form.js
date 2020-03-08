@@ -60,10 +60,11 @@
     window.util.changeFormFieldsState(formFields, true);
     adForm.classList.add('ad-form--disabled');
     inactivatePage();
+    window.modal.renderSuccessPopup();
   };
 
   var errorHandler = function () {
-    console.log('ошибка');
+    window.modal.renderErrorPopup();
   };
 
   var setAvatar = function (evt) {

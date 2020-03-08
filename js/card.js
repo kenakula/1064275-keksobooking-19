@@ -111,6 +111,10 @@
     return cardElement;
   };
 
+  var makePinActive = function (evt) {
+    evt.currentTarget.classList.add('map__pin--active');
+  };
+
   var renderCard = function (evt) {
     var dataIndex = evt.currentTarget.getAttribute('data-index');
     var fragment = document.createDocumentFragment();
@@ -121,15 +125,18 @@
 
   var closeCard = function () {
     var card = map.querySelector('.popup');
+    var activePin = mapArea.querySelector('.map__pin--active');
 
     if (card) {
       map.removeChild(card);
+      activePin.classList.remove('map__pin--active');
     }
 
     document.removeEventListener('keydown', onEscPress);
   };
 
   var onOfferPinClick = function (evt) {
+    makePinActive(evt);
     closeCard();
     renderCard(evt);
   };

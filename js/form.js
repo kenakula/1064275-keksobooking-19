@@ -2,6 +2,7 @@
 
 (function () {
   var NOT_FOR_RESIDENCE_ROOMS_NUMBER = '100';
+  var MIN_BUNGALO_PRICE = 0;
   var MIN_FLAT_PRICE = 1000;
   var MIN_HOUSE_PRICE = 5000;
   var MIN_PALACE_PRICE = 10000;
@@ -52,9 +53,16 @@
     reader.readAsDataURL(evt.target.files[0]);
   };
 
-  var createPhoto = function (evt) {
+  var styleWrapper = function (elem) {
+    elem.style.display = 'flex';
+    elem.style.justifyContent = 'center';
+    elem.style.alignItems = 'center';
+  };
+
+  var renderEstatePhoto = function (evt) {
     var elem = document.createElement('img');
     var wrapper = photoWrapper.cloneNode();
+    styleWrapper(wrapper);
     photoWrapper.remove();
     setPhoto(evt, elem);
     wrapper.appendChild(elem);
@@ -66,7 +74,7 @@
     var message = '';
 
     if (matches) {
-      createPhoto(evt);
+      renderEstatePhoto(evt);
     } else {
       message = 'Для фотографии подойдет только изображение';
     }
@@ -106,6 +114,22 @@
     }
 
     return '';
+  };
+
+  var setPricePlaceholder = function (type, input) {
+    switch (type) {
+      case 'bungalo':
+        input.setAttribute('placeholder', MIN_BUNGALO_PRICE);
+        break;
+      case 'flat':
+        input.setAttribute('placeholder', MIN_FLAT_PRICE);
+        break;
+      case 'house':
+        input.setAttribute('placeholder', MIN_HOUSE_PRICE);
+        break;
+      default:
+        input.setAttribute('placeholder', MIN_PALACE_PRICE);
+    }
   };
 
   var getHouseTypeErrorMessage = function () {
@@ -175,8 +199,10 @@
   };
 
   var onHouseTypeInputChange = function () {
+    var houseType = houseTypeSelect.value;
     var message = getHouseTypeErrorMessage();
     houseTypeSelect.setCustomValidity(message);
+    setPricePlaceholder(houseType, priceInput);
   };
 
   var onPriceInputChange = function () {

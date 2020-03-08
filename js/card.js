@@ -23,6 +23,18 @@
     'conditioner': 'popup__feature--conditioner',
   };
 
+  var clearContainer = function (container) {
+    if (container.firstChild) {
+      container.removeChild(container.firstChild);
+    }
+  };
+
+  var hideIfEmpty = function (elem, data) {
+    if (data.length === 0) {
+      elem.style.display = 'none';
+    }
+  };
+
   var getFlatType = function (data) {
     var flatType = data.offer.type;
 
@@ -74,18 +86,6 @@
     });
 
     elem.appendChild(fragment);
-  };
-
-  var clearContainer = function (container) {
-    while (container.firstChild) {
-      container.removeChild(container.firstChild);
-    }
-  };
-
-  var hideIfEmpty = function (elem, data) {
-    if (data.length === 0) {
-      elem.style.display = 'none';
-    }
   };
 
   var setCard = function (data) {

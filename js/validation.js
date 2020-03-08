@@ -1,12 +1,12 @@
 'use strict';
 
 (function () {
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
   var MAX_OFFER_PRICE = 1000000;
   var NOT_FOR_RESIDENCE_ROOMS_NUMBER = '100';
   var MIN_FLAT_PRICE = 1000;
   var MIN_HOUSE_PRICE = 5000;
   var MIN_PALACE_PRICE = 10000;
+  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   var adForm = document.querySelector('.ad-form');
   var priceInput = adForm.querySelector('#price');
@@ -14,41 +14,6 @@
   var titleInput = adForm.querySelector('#title');
   var roomNumberSelect = adForm.querySelector('#room_number');
   var roomCapacitySelect = adForm.querySelector('#capacity');
-
-  var fileMatches = function (elem) {
-    var file = elem.files[0];
-    var fileName = file.name.toLowerCase();
-
-    return FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
-  };
-
-  var imagesChooser = function (evt, fc, chooser) {
-    var matches = fileMatches(evt.target);
-    var message = '';
-
-    if (matches) {
-      fc(evt);
-    } else {
-      message = 'Для фотографии подойдет только изображение';
-    }
-
-    chooser.setCustomValidity(message);
-  };
-
-  var avatarChooser = function (evt, fc, chooser) {
-    var matches = fileMatches(evt.target);
-    var message = '';
-
-    if (matches) {
-      fc(evt);
-    } else {
-      message = 'Для аватара подойдет только изображение';
-    }
-
-    chooser.setCustomValidity(message);
-  };
 
   var getPriceInputErrorMessage = function () {
     var price = priceInput.value;
@@ -65,15 +30,15 @@
     var price = priceInput.value;
 
     if (houseType === 'flat' && price < MIN_FLAT_PRICE) {
-      return 'Цена за ночь для квартиры должна быть не меньшее ' + MIN_FLAT_PRICE;
+      return 'Цена за ночь для квартиры должна быть не меньше ' + MIN_FLAT_PRICE;
     }
 
     if (houseType === 'house' && price < MIN_HOUSE_PRICE) {
-      return 'Цена за ночь для дома должна быть не меньшее ' + MIN_HOUSE_PRICE;
+      return 'Цена за ночь для дома должна быть не меньше ' + MIN_HOUSE_PRICE;
     }
 
     if (houseType === 'palace' && price < MIN_PALACE_PRICE) {
-      return 'Цена за ночь для дворца должна быть не меньшее ' + MIN_PALACE_PRICE;
+      return 'Цена за ночь для дворца должна быть не меньше ' + MIN_PALACE_PRICE;
     }
 
     return '';
@@ -116,13 +81,24 @@
     return '';
   };
 
+  var setPhotoErrorMessage = function (evt, chooser) {
+    var matches = window.util.fileMatches(evt.target, FILE_TYPES);
+
+    if (matches) {
+      var message = '';
+    } else {
+      message = 'Выберите подходящий формат изображения';
+    }
+
+    chooser.setCustomValidity(message);
+  };
+
   window.validation = {
-    imagesChooser: imagesChooser,
-    avatarChooser: avatarChooser,
     getPriceInputErrorMessage: getPriceInputErrorMessage,
     getHouseTypeErrorMessage: getHouseTypeErrorMessage,
     getTitleInputErrorMessage: getTitleInputErrorMessage,
     getRoomNumberSelectErrorMessage: getRoomNumberSelectErrorMessage,
+    setPhotoErrorMessage: setPhotoErrorMessage,
   };
 
 })();

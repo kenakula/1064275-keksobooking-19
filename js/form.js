@@ -1,16 +1,27 @@
 'use strict';
 
 (function () {
+  var MAIN_PIN_WIDTH = 65;
+  var MAIN_PIN_HEIGHT = 65;
   var MIN_BUNGALO_PRICE = 0;
   var MIN_FLAT_PRICE = 1000;
   var MIN_HOUSE_PRICE = 5000;
   var MIN_PALACE_PRICE = 10000;
-  var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
+
+  var map = document.querySelector('.map');
+  var mapArea = map.querySelector('.map__pins');
+  var mainPin = map.querySelector('.map__pin--main');
+
+  var filterForm = document.querySelector('.map__filters');
+  var filterFields = filterForm.querySelectorAll('fieldset, select');
 
   var adForm = document.querySelector('.ad-form');
+  var formFields = adForm.querySelectorAll('fieldset');
+
+  var titleInput = adForm.querySelector('#title');
+  var addressInput = adForm.querySelector('#address');
   var roomNumberSelect = adForm.querySelector('#room_number');
   var roomCapacitySelect = adForm.querySelector('#capacity');
-  var titleInput = adForm.querySelector('#title');
   var houseTypeSelect = adForm.querySelector('#type');
   var priceInput = adForm.querySelector('#price');
   var checkinTimeSelect = adForm.querySelector('#timein');
@@ -23,13 +34,36 @@
   var photoWrapper = photosContainer.querySelector('.ad-form__photo');
   var photoUploader = adForm.querySelector('.ad-form__upload');
 
-  var fileMatches = function (elem) {
-    var file = elem.files[0];
-    var fileName = file.name.toLowerCase();
+  var defaultMainPinCoordinates = {
+    x: mainPin.offsetLeft,
+    y: mainPin.offsetTop
+  };
 
-    return FILE_TYPES.some(function (it) {
-      return fileName.endsWith(it);
-    });
+  var resetMainPinPosition = function () {
+    mainPin.style.left = defaultMainPinCoordinates.x + 'px';
+    mainPin.style.top = defaultMainPinCoordinates.y + 'px';
+    addressInput.value = Math.ceil(defaultMainPinCoordinates.x + MAIN_PIN_WIDTH / 2) + ', ' +
+      Math.ceil(defaultMainPinCoordinates.y + MAIN_PIN_HEIGHT / 2);
+  };
+
+  var inactivatePage = function () {
+    window.card.closeCard();
+    window.util.clearPins(mapArea);
+    resetMainPinPosition();
+    map.classList.add('map--faded');
+  };
+
+  var successHandler = function () {
+    filterForm.reset();
+    adForm.reset();
+    window.util.changeFormFieldsState(filterFields, true);
+    window.util.changeFormFieldsState(formFields, true);
+    adForm.classList.add('ad-form--disabled');
+    inactivatePage();
+  };
+
+  var errorHandler = function () {
+    console.log('ошибка');
   };
 
   var setAvatar = function (evt) {
@@ -65,32 +99,6 @@
     setPhoto(evt, elem);
     wrapper.appendChild(elem);
     photoUploader.after(wrapper);
-  };
-
-  var validateImagesChooser = function (evt) {
-    var matches = fileMatches(evt.target);
-    var message = '';
-
-    if (matches) {
-      renderEstatePhoto(evt);
-    } else {
-      message = 'Для фотографии подойдет только изображение';
-    }
-
-    imagesFileChooser.setCustomValidity(message);
-  };
-
-  var valiateAvatarChooser = function (evt) {
-    var matches = fileMatches(evt.target);
-    var message = '';
-
-    if (matches) {
-      setAvatar(evt);
-    } else {
-      message = 'Для аватара подойдет только изображение';
-    }
-
-    avatarFileChooser.setCustomValidity(message);
   };
 
   var synchronizeCheckout = function () {
@@ -141,19 +149,36 @@
     priceInput.setCustomValidity(message);
   };
 
+  var onImageChooserChange = function (evt) {
+    window.validation.setPhotoErrorMessage(evt, imagesFileChooser);
+    renderEstatePhoto(evt);
+  };
+
+  var onAvatarChooserChange = function (evt) {
+    window.validation.setPhotoErrorMessage(evt, avatarFileChooser);
+    setAvatar(evt);
+  };
+
+  var onFormSubmit = function (evt) {
+    evt.preventDefault();
+
+    window.backend.upload(new FormData(adForm), successHandler, errorHandler);
+  };
+
   roomCapacitySelect.addEventListener('change', onRoomCapacitySelectChange);
   roomNumberSelect.addEventListener('change', onRoomCapacitySelectChange);
-
   titleInput.addEventListener('change', onTitleInputChange);
-
   houseTypeSelect.addEventListener('change', onHouseTypeInputChange);
   priceInput.addEventListener('change', onHouseTypeInputChange);
   priceInput.addEventListener('change', onPriceInputChange);
   checkinTimeSelect.addEventListener('change', synchronizeCheckout);
   checkoutTimeSelect.addEventListener('change', synchronizeCheckin);
 
-  avatarFileChooser.addEventListener('change', valiateAvatarChooser);
-  imagesFileChooser.addEventListener('change', validateImagesChooser);
+  avatarFileChooser.addEventListener('change', onAvatarChooserChange);
+  imagesFileChooser.addEventListener('change', onImageChooserChange);
+
+  adForm.addEventListener('submit', onFormSubmit);
+
 })();
 
 

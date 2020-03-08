@@ -2,9 +2,10 @@
 
 (function () {
   var MAIN_PIN_WIDTH = 65;
-  var MAIN_PIN_HEIGHT = 80;
-  var MIN_PIN_TOP_POSITION = 130;
-  var MIN_PIN_BOTTOM_POSITION = 630;
+  var MAIN_PIN_HEIGHT = 65;
+  var MAIN_PIN_TAIL = 17;
+  var MIN_PIN_MIN_TOP_POSITION = 130;
+  var MIN_PIN_MAX_TOP_POSITION = 630;
 
   var map = document.querySelector('.map__pins');
   var mainPin = map.querySelector('.map__pin--main');
@@ -12,9 +13,9 @@
 
 
   var dragLimits = {
-    top: MIN_PIN_TOP_POSITION - MAIN_PIN_HEIGHT,
+    top: MIN_PIN_MIN_TOP_POSITION - MAIN_PIN_HEIGHT - MAIN_PIN_TAIL,
     right: map.offsetWidth - mainPin.offsetWidth / 2,
-    bottom: MIN_PIN_BOTTOM_POSITION - MAIN_PIN_HEIGHT,
+    bottom: MIN_PIN_MAX_TOP_POSITION - MAIN_PIN_HEIGHT - MAIN_PIN_TAIL,
     left: map.offsetLeft - mainPin.offsetWidth / 2
   };
 
@@ -24,13 +25,13 @@
 
     return {
       x: left + MAIN_PIN_WIDTH / 2,
-      y: top + MAIN_PIN_HEIGHT,
+      y: top + MAIN_PIN_HEIGHT + MAIN_PIN_TAIL,
     };
   };
 
   var writeAddress = function () {
     var coordinates = getMainPinCoordinates();
-    addressInput.value = Math.round(coordinates.x) + ', ' + Math.round(coordinates.y);
+    addressInput.value = Math.floor(coordinates.x) + ', ' + Math.floor(coordinates.y);
   };
 
   var restrainPin = function () {

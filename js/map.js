@@ -2,8 +2,6 @@
 
 (function () {
   var KEY_ENTER = 'Enter';
-  var MAIN_PIN_WIDTH = 65;
-  var MAIN_PIN_HEIGHT = 65;
   var PIN_WIDTH = 50;
   var PIN_HEIGHT = 70;
   var MAX_PINS_COUNT_ON_MAP = 5;
@@ -115,7 +113,7 @@
     window.util.changeFormFieldsState(formFields, false);
   };
 
-  addressInput.value = window.util.getPinCoordinatesString(mainPin, MAIN_PIN_WIDTH, MAIN_PIN_HEIGHT);
+  addressInput.value = window.util.getPinCoordinatesString(mainPin, window.constants.mainPinWidth, window.constants.mainPinHeight);
 
   window.util.changeFormFieldsState(formFields, true);
 

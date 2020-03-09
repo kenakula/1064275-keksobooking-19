@@ -3,9 +3,7 @@
 (function () {
   var MAX_OFFER_PRICE = 1000000;
   var NOT_FOR_RESIDENCE_ROOMS_NUMBER = '100';
-  var MIN_FLAT_PRICE = 1000;
-  var MIN_HOUSE_PRICE = 5000;
-  var MIN_PALACE_PRICE = 10000;
+
   var FILE_TYPES = ['gif', 'jpg', 'jpeg', 'png'];
 
   var adForm = document.querySelector('.ad-form');
@@ -29,16 +27,16 @@
     var houseType = houseTypeSelect.value;
     var price = priceInput.value;
 
-    if (houseType === 'flat' && price < MIN_FLAT_PRICE) {
-      return 'Цена за ночь для квартиры должна быть не меньше ' + MIN_FLAT_PRICE;
+    if (houseType === 'flat' && price < window.constants.MinPrice.FLAT) {
+      return 'Цена за ночь для квартиры должна быть не меньше ' + window.constants.MinPrice.FLAT;
     }
 
-    if (houseType === 'house' && price < MIN_HOUSE_PRICE) {
-      return 'Цена за ночь для дома должна быть не меньше ' + MIN_HOUSE_PRICE;
+    if (houseType === 'house' && price < window.constants.MinPrice.HOUSE) {
+      return 'Цена за ночь для дома должна быть не меньше ' + window.constants.MinPrice.HOUSE;
     }
 
-    if (houseType === 'palace' && price < MIN_PALACE_PRICE) {
-      return 'Цена за ночь для дворца должна быть не меньше ' + MIN_PALACE_PRICE;
+    if (houseType === 'palace' && price < window.constants.MinPrice.PALACE) {
+      return 'Цена за ночь для дворца должна быть не меньше ' + window.constants.MinPrice.PALACE;
     }
 
     return '';

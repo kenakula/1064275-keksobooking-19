@@ -1,7 +1,6 @@
 'use strict';
 (function () {
   var PRICE_CURRENCY_STRING = '&#x20bd;<span>/ночь</span>';
-  var ESC_KEY = 'Escape';
 
   var cardTemplate = document.querySelector('#card').content.querySelector('.popup');
   var map = document.querySelector('.map');
@@ -144,7 +143,7 @@
   };
 
   var onEscPress = function (evt) {
-    if (evt.key === ESC_KEY) {
+    if (evt.key === window.constants.escKey) {
       closeCard();
     }
   };

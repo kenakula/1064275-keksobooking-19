@@ -1,8 +1,6 @@
 'use strict';
 
 (function () {
-  var MAIN_PIN_WIDTH = 65;
-  var MAIN_PIN_HEIGHT = 65;
   var MAIN_PIN_TAIL = 17;
   var MIN_PIN_MIN_TOP_POSITION = 130;
   var MIN_PIN_MAX_TOP_POSITION = 630;
@@ -13,9 +11,9 @@
 
 
   var dragLimits = {
-    top: MIN_PIN_MIN_TOP_POSITION - MAIN_PIN_HEIGHT - MAIN_PIN_TAIL,
+    top: MIN_PIN_MIN_TOP_POSITION - window.constants.mainPinWidth - MAIN_PIN_TAIL,
     right: map.offsetWidth - mainPin.offsetWidth / 2,
-    bottom: MIN_PIN_MAX_TOP_POSITION - MAIN_PIN_HEIGHT - MAIN_PIN_TAIL,
+    bottom: MIN_PIN_MAX_TOP_POSITION - window.constants.mainPinHeight - MAIN_PIN_TAIL,
     left: map.offsetLeft - mainPin.offsetWidth / 2
   };
 
@@ -24,8 +22,8 @@
     var top = mainPin.offsetTop;
 
     return {
-      x: left + MAIN_PIN_WIDTH / 2,
-      y: top + MAIN_PIN_HEIGHT + MAIN_PIN_TAIL,
+      x: left + window.constants.mainPinWidth / 2,
+      y: top + window.constants.mainPinHeight + MAIN_PIN_TAIL,
     };
   };
 
@@ -35,7 +33,7 @@
   };
 
   var restrainPin = function () {
-    if (mainPin.offsetLeft + MAIN_PIN_WIDTH / 2 > map.offsetWidth) {
+    if (mainPin.offsetLeft + window.constants.mainPinWidth / 2 > map.offsetWidth) {
       mainPin.style.left = dragLimits.right + 'px';
     }
 

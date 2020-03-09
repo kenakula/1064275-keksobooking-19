@@ -1,13 +1,6 @@
 'use strict';
 
 (function () {
-  var MAIN_PIN_WIDTH = 65;
-  var MAIN_PIN_HEIGHT = 65;
-  var MIN_BUNGALO_PRICE = 0;
-  var MIN_FLAT_PRICE = 1000;
-  var MIN_HOUSE_PRICE = 5000;
-  var MIN_PALACE_PRICE = 10000;
-
   var map = document.querySelector('.map');
   var mapArea = map.querySelector('.map__pins');
   var mainPin = map.querySelector('.map__pin--main');
@@ -42,8 +35,8 @@
   var resetMainPinPosition = function () {
     mainPin.style.left = defaultMainPinCoordinates.x + 'px';
     mainPin.style.top = defaultMainPinCoordinates.y + 'px';
-    addressInput.value = Math.ceil(defaultMainPinCoordinates.x + MAIN_PIN_WIDTH / 2) + ', ' +
-      Math.ceil(defaultMainPinCoordinates.y + MAIN_PIN_HEIGHT / 2);
+    addressInput.value = Math.ceil(defaultMainPinCoordinates.x + window.constants.mainPinWidth / 2) + ', ' +
+      Math.ceil(defaultMainPinCoordinates.y + window.constants.mainPinHeight / 2);
   };
 
   var inactivatePage = function () {
@@ -115,16 +108,16 @@
   var setPricePlaceholder = function (type, input) {
     switch (type) {
       case 'bungalo':
-        input.setAttribute('placeholder', MIN_BUNGALO_PRICE);
+        input.setAttribute('placeholder', window.constants.MinPrice.BUNGALO);
         break;
       case 'flat':
-        input.setAttribute('placeholder', MIN_FLAT_PRICE);
+        input.setAttribute('placeholder', window.constants.MinPrice.FLAT);
         break;
       case 'house':
-        input.setAttribute('placeholder', MIN_HOUSE_PRICE);
+        input.setAttribute('placeholder', window.constants.MinPrice.HOUSE);
         break;
       default:
-        input.setAttribute('placeholder', MIN_PALACE_PRICE);
+        input.setAttribute('placeholder', window.constants.MinPrice.PALACE);
     }
   };
 

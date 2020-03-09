@@ -17,7 +17,7 @@
   };
 
   var onModalEscPress = function (evt) {
-    if (evt.key === 'Escape') {
+    if (evt.key === window.constants.escKey) {
       closeModal();
     }
   };

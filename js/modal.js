@@ -14,6 +14,7 @@
     }
 
     document.removeEventListener('keydown', onModalEscPress);
+    document.removeEventListener('click', closeModal);
   };
 
   var onModalEscPress = function (evt) {
@@ -40,11 +41,13 @@
   var renderSuccessPopup = function () {
     popupContainer.appendChild(setModal(successTemplate));
     document.addEventListener('keydown', onModalEscPress);
+    document.addEventListener('click', closeModal);
   };
 
   var renderErrorPopup = function () {
     popupContainer.appendChild(setModal(errorTemplate));
     document.addEventListener('keydown', onModalEscPress);
+    document.addEventListener('click', closeModal);
   };
 
   window.modal = {

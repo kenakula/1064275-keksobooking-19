@@ -113,7 +113,7 @@
     window.util.changeFormFieldsState(formFields, false);
   };
 
-  addressInput.value = window.util.getPinCoordinatesString(mainPin, window.constants.mainPinWidth, window.constants.mainPinHeight);
+  addressInput.value = window.util.getPinCoordinatesString(mainPin, window.constants.mainPinWidth, window.constants.mainPin);
 
   window.util.changeFormFieldsState(formFields, true);
 

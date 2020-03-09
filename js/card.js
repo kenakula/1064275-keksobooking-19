@@ -23,7 +23,7 @@
   };
 
   var clearContainer = function (container) {
-    if (container.firstChild) {
+    while (container.firstChild) {
       container.removeChild(container.firstChild);
     }
   };
@@ -122,6 +122,7 @@
     var dataIndex = evt.currentTarget.getAttribute('data-index');
     var fragment = document.createDocumentFragment();
     fragment.appendChild(setCard(window.dataPins[dataIndex]));
+
     mapArea.after(fragment);
     document.addEventListener('keydown', onEscPress);
   };

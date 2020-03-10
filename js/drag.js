@@ -27,7 +27,7 @@
     };
   };
 
-  var writeAddress = function () {
+  window.writeAddress = function () {
     var coordinates = getMainPinCoordinates();
     addressInput.value = Math.floor(coordinates.x) + ', ' + Math.floor(coordinates.y);
   };
@@ -77,7 +77,7 @@
       mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
 
       restrainPin();
-      writeAddress();
+      window.writeAddress();
     };
 
     var onMouseUp = function (upEvt) {
@@ -86,7 +86,7 @@
       document.removeEventListener('mouseup', onMouseUp);
 
       if (isDragged) {
-        writeAddress();
+        window.writeAddress();
       }
     };
 

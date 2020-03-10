@@ -111,6 +111,7 @@
     window.backend.load(successHandler, errorHandler);
     adForm.classList.remove('ad-form--disabled');
     window.util.changeFormFieldsState(formFields, false);
+    window.writeAddress();
   };
 
   addressInput.value = window.util.getPinCoordinatesString(mainPin, window.constants.mainPinWidth, window.constants.mainPinHeight);

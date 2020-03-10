@@ -2,6 +2,7 @@
 
 (function () {
   var errorInputShadowStyle = '0 0 2px 2px red';
+  var defaultAvatarImagePath = 'img/muffin-grey.svg';
 
   var map = document.querySelector('.map');
   var mapArea = map.querySelector('.map__pins');
@@ -50,6 +51,8 @@
   };
 
   var resetForms = function () {
+    resetAvatar();
+    resetEstatePhotos();
     filterForm.reset();
     adForm.reset();
     window.util.changeFormFieldsState(filterFields, true);
@@ -87,18 +90,21 @@
   };
 
   var styleWrapper = function (elem) {
+    elem.classList.add('user-uploaded-photo');
     elem.style.display = 'flex';
     elem.style.justifyContent = 'center';
     elem.style.alignItems = 'center';
   };
 
   var renderEstatePhoto = function (evt) {
-    var elem = document.createElement('img');
+    photoWrapper.style.display = 'none';
     var wrapper = photoWrapper.cloneNode();
     styleWrapper(wrapper);
-    photoWrapper.remove();
-    setPhoto(evt, elem);
-    wrapper.appendChild(elem);
+
+    var photo = document.createElement('img');
+    setPhoto(evt, photo);
+
+    wrapper.appendChild(photo);
     photoUploader.after(wrapper);
   };
 
@@ -130,10 +136,34 @@
 
   var changeInputOutline = function (message, input) {
     if (message.length > 0) {
+      input.classList.add('errored');
       input.style.boxShadow = errorInputShadowStyle;
     } else {
       input.style.boxShadow = '';
     }
+  };
+
+  var resetOutlines = function () {
+    var inputs = adForm.querySelectorAll('.errored');
+    inputs.forEach(function (it) {
+      it.classList.remove('errored');
+      it.style.boxShadow = '';
+    });
+  };
+
+  var resetAvatar = function () {
+    previewAvatar.src = defaultAvatarImagePath;
+  };
+
+  var resetEstatePhotos = function () {
+    var emptyWrapper = photosContainer.querySelector('.ad-form__photo:not(.user-uploaded-photo)');
+    emptyWrapper.style.display = '';
+
+    var photos = photosContainer.querySelectorAll('.user-uploaded-photo');
+    photos.forEach(function (it) {
+      it.remove();
+    });
+
   };
 
   var onRoomCapacitySelectChange = function () {
@@ -162,7 +192,7 @@
     changeInputOutline(message, priceInput);
   };
 
-  var onImageChooserChange = function (evt) {
+  var onPhotoChooserChange = function (evt) {
     window.validation.setPhotoErrorMessage(evt, imagesFileChooser);
     renderEstatePhoto(evt);
   };
@@ -180,6 +210,9 @@
 
   var onResetButtonClick = function (evt) {
     evt.preventDefault();
+    resetAvatar();
+    resetEstatePhotos();
+    resetOutlines();
     resetForms();
     inactivatePage();
   };
@@ -194,7 +227,7 @@
   checkoutTimeSelect.addEventListener('change', synchronizeCheckin);
 
   avatarFileChooser.addEventListener('change', onAvatarChooserChange);
-  imagesFileChooser.addEventListener('change', onImageChooserChange);
+  imagesFileChooser.addEventListener('change', onPhotoChooserChange);
 
   adForm.addEventListener('submit', onFormSubmit);
   resetButton.addEventListener('click', onResetButtonClick);

@@ -9,15 +9,17 @@
   var closeModal = function () {
     var modal = popupContainer.querySelector('.modal');
 
-    if (modal) {
-      popupContainer.removeChild(modal);
-    }
+    window.util.removeElement(modal, popupContainer);
 
-    document.removeEventListener('keydown', onModalEscPress);
-    document.removeEventListener('click', closeModal);
+    document.removeEventListener('keydown', onDocumentEscPressCloseModal);
+    document.removeEventListener('click', onDocumentClickCloseModal);
   };
 
-  var onModalEscPress = function (evt) {
+  var onDocumentClickCloseModal = function () {
+    closeModal();
+  };
+
+  var onDocumentEscPressCloseModal = function (evt) {
     if (evt.key === window.constants.escKey) {
       closeModal();
     }
@@ -30,7 +32,7 @@
 
     var closeButton = element.querySelector('.error__button');
     if (closeButton) {
-      closeButton.addEventListener('click', closeModal);
+      closeButton.addEventListener('click', onDocumentClickCloseModal);
     }
 
     fragment.appendChild(element);
@@ -40,14 +42,14 @@
 
   var renderSuccessPopup = function () {
     popupContainer.appendChild(setModal(successTemplate));
-    document.addEventListener('keydown', onModalEscPress);
-    document.addEventListener('click', closeModal);
+    document.addEventListener('keydown', onDocumentEscPressCloseModal);
+    document.addEventListener('click', onDocumentClickCloseModal);
   };
 
   var renderErrorPopup = function () {
     popupContainer.appendChild(setModal(errorTemplate));
-    document.addEventListener('keydown', onModalEscPress);
-    document.addEventListener('click', closeModal);
+    document.addEventListener('keydown', onDocumentEscPressCloseModal);
+    document.addEventListener('click', onDocumentClickCloseModal);
   };
 
   window.modal = {

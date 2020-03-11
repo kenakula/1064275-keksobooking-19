@@ -16,7 +16,7 @@
     return Math.round(posX) + ', ' + Math.round(posY);
   };
 
-  var fileMatches = function (elem, types) {
+  var checkFilesForTypeMatches = function (elem, types) {
     var file = elem.files[0];
     var fileName = file.name.toLowerCase();
 
@@ -31,12 +31,23 @@
     });
   };
 
+  var changeCheckboxState = function (elem) {
+    elem.checked = elem.checked ? false : true;
+  };
+
+  var removeElement = function (elem, container) {
+    if (elem) {
+      container.removeChild(elem);
+    }
+  };
 
   window.util = {
     clearPins: clearPins,
     getPinCoordinatesString: getPinCoordinatesString,
-    fileMatches: fileMatches,
+    checkFilesForTypeMatches: checkFilesForTypeMatches,
     changeFormFieldsState: changeFormFieldsState,
+    changeCheckboxState: changeCheckboxState,
+    removeElement: removeElement,
   };
 
 })();

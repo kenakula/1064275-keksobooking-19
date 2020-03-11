@@ -22,6 +22,7 @@
   var priceInput = adForm.querySelector('#price');
   var checkinTimeSelect = adForm.querySelector('#timein');
   var checkoutTimeSelect = adForm.querySelector('#timeout');
+  var featuresContainer = adForm.querySelector('.features');
   var avatarFileChooser = adForm.querySelector('#avatar');
   var imagesFileChooser = adForm.querySelector('#images');
 
@@ -60,13 +61,13 @@
     adForm.classList.add('ad-form--disabled');
   };
 
-  var successHandler = function () {
+  var onLoadSuccess = function () {
     resetForms();
     inactivatePage();
     window.modal.renderSuccessPopup();
   };
 
-  var errorHandler = function () {
+  var onLoadError = function () {
     window.modal.renderErrorPopup();
   };
 
@@ -108,12 +109,12 @@
     photoUploader.after(wrapper);
   };
 
-  var synchronizeCheckout = function () {
+  var onCheckinSelectCheckoutTimeSynchronize = function () {
     var checkinIndex = checkinTimeSelect.selectedIndex;
     checkoutTimeSelect.options[checkinIndex].selected = true;
   };
 
-  var synchronizeCheckin = function () {
+  var onCheckoutSelectCheckinTimeSynchronize = function () {
     var checkoutIndex = checkoutTimeSelect.selectedIndex;
     checkinTimeSelect.options[checkoutIndex].selected = true;
   };
@@ -192,6 +193,16 @@
     changeInputOutline(message, priceInput);
   };
 
+  var onFormFeaturesEnterPress = function (evt) {
+    var target = evt.target;
+
+    if (evt.key === window.constants.enterKey) {
+      evt.preventDefault();
+      window.util.changeCheckboxState(target);
+    }
+
+  };
+
   var onPhotoChooserChange = function (evt) {
     window.validation.setPhotoErrorMessage(evt, imagesFileChooser);
     renderEstatePhoto(evt);
@@ -205,7 +216,7 @@
   var onFormSubmit = function (evt) {
     evt.preventDefault();
 
-    window.backend.upload(new FormData(adForm), successHandler, errorHandler);
+    window.backend.upload(new FormData(adForm), onLoadSuccess, onLoadError);
   };
 
   var onResetButtonClick = function (evt) {
@@ -223,8 +234,9 @@
   houseTypeSelect.addEventListener('change', onHouseTypeInputChange);
   priceInput.addEventListener('change', onHouseTypeInputChange);
   priceInput.addEventListener('change', onPriceInputChange);
-  checkinTimeSelect.addEventListener('change', synchronizeCheckout);
-  checkoutTimeSelect.addEventListener('change', synchronizeCheckin);
+  checkinTimeSelect.addEventListener('change', onCheckinSelectCheckoutTimeSynchronize);
+  checkoutTimeSelect.addEventListener('change', onCheckoutSelectCheckinTimeSynchronize);
+  featuresContainer.addEventListener('keydown', onFormFeaturesEnterPress);
 
   avatarFileChooser.addEventListener('change', onAvatarChooserChange);
   imagesFileChooser.addEventListener('change', onPhotoChooserChange);

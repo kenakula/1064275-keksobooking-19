@@ -17,13 +17,13 @@
   var filterForm = document.querySelector('.map__filters');
   var filterSelects = filterForm.querySelectorAll('select, fieldset');
 
-  var successHandler = function (data) {
+  var onLoadSuccess = function (data) {
     window.dataPins = data;
     renderPins(window.dataPins.slice(0, MAX_PINS_COUNT_ON_MAP));
     activateFilters();
   };
 
-  var errorHandler = function (errorMessage) {
+  var onLoadError = function (errorMessage) {
     var node = document.createElement('div');
 
     node.style = 'z-index: 100; margin: 0 auto; text-align: center; background-color: tomato;';
@@ -108,7 +108,7 @@
 
   var activatePage = function () {
     map.classList.remove('map--faded');
-    window.backend.load(successHandler, errorHandler);
+    window.backend.load(onLoadSuccess, onLoadError);
     adForm.classList.remove('ad-form--disabled');
     window.util.changeFormFieldsState(formFields, false);
     window.writeAddress();

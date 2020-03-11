@@ -11,7 +11,7 @@
 
     window.util.removeElement(modal, popupContainer);
 
-    document.removeEventListener('keydown', onModalEscPress);
+    document.removeEventListener('keydown', onDocumentEscPressCloseModal);
     document.removeEventListener('click', onDocumentClickCloseModal);
   };
 
@@ -19,7 +19,7 @@
     closeModal();
   };
 
-  var onModalEscPress = function (evt) {
+  var onDocumentEscPressCloseModal = function (evt) {
     if (evt.key === window.constants.escKey) {
       closeModal();
     }
@@ -42,13 +42,13 @@
 
   var renderSuccessPopup = function () {
     popupContainer.appendChild(setModal(successTemplate));
-    document.addEventListener('keydown', onModalEscPress);
+    document.addEventListener('keydown', onDocumentEscPressCloseModal);
     document.addEventListener('click', onDocumentClickCloseModal);
   };
 
   var renderErrorPopup = function () {
     popupContainer.appendChild(setModal(errorTemplate));
-    document.addEventListener('keydown', onModalEscPress);
+    document.addEventListener('keydown', onDocumentEscPressCloseModal);
     document.addEventListener('click', onDocumentClickCloseModal);
   };
 

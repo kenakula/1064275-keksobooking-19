@@ -9,9 +9,9 @@
   var housingPriceSelect = filterForm.querySelector('#housing-price');
   var housingRoomsSelect = filterForm.querySelector('#housing-rooms');
   var housingGuestsSelect = filterForm.querySelector('#housing-guests');
-  var housingFeatures = filterForm.querySelector('#housing-features');
+  var housingFeaturesContainer = filterForm.querySelector('#housing-features');
 
-  var houseTypeFilter = function (data) {
+  var getPinsFilteredByHouseType = function (data) {
     var newData = data.filter(function (pin) {
       return pin.offer.type === housingTypeSelect.value;
     });
@@ -19,7 +19,7 @@
     return newData;
   };
 
-  var housePriceFilter = function (data) {
+  var getPinsFilteredByHousePrice = function (data) {
     var newData = data.filter(function (pin) {
       var price = pin.offer.price;
 
@@ -37,7 +37,7 @@
     return newData;
   };
 
-  var housingRoomsFilter = function (data) {
+  var getPinsFilteredByRoomsNumber = function (data) {
     var newData = data.filter(function (pin) {
 
       return pin.offer.rooms === parseInt(housingRoomsSelect.value, 10);
@@ -46,7 +46,7 @@
     return newData;
   };
 
-  var housingGuestsFilter = function (data) {
+  var getPinsFilteredByGuestsNumber = function (data) {
     var newData = data.filter(function (pin) {
       var guestsCount = pin.offer.guests;
 
@@ -65,7 +65,7 @@
   };
 
   var getSelectedFeaturesList = function () {
-    var selected = housingFeatures.querySelectorAll('input:checked');
+    var selected = housingFeaturesContainer.querySelectorAll('input:checked');
 
     return Array.from(selected)
       .map(function (it) {
@@ -73,7 +73,7 @@
       });
   };
 
-  var featuresFilter = function (data) {
+  var getPinsFilteredByFeatures = function (data) {
     var selectedFeatures = getSelectedFeaturesList();
     var newData = data.filter(function (pin) {
       return selectedFeatures.every(function (it) {
@@ -89,26 +89,39 @@
     var selectedFeatures = getSelectedFeaturesList();
 
     if (housingTypeSelect.value !== DEFAULT_FILTER_STATE) {
-      newPins = houseTypeFilter(newPins);
+      newPins = getPinsFilteredByHouseType(newPins);
     }
 
     if (housingPriceSelect.value !== DEFAULT_FILTER_STATE) {
-      newPins = housePriceFilter(newPins);
+      newPins = getPinsFilteredByHousePrice(newPins);
     }
 
     if (housingRoomsSelect.value !== DEFAULT_FILTER_STATE) {
-      newPins = housingRoomsFilter(newPins);
+      newPins = getPinsFilteredByRoomsNumber(newPins);
     }
 
     if (housingGuestsSelect.value !== DEFAULT_FILTER_STATE) {
-      newPins = housingGuestsFilter(newPins);
+      newPins = getPinsFilteredByGuestsNumber(newPins);
     }
 
     if (selectedFeatures.length > 0) {
-      newPins = featuresFilter(newPins);
+      newPins = getPinsFilteredByFeatures(newPins);
     }
 
     return newPins;
   };
+
+  var onFilterFeaturesEnterPress = function (evt) {
+    var target = evt.target;
+    var event = new Event('change', {bubbles: true});
+
+    if (evt.key === window.constants.enterKey) {
+      window.util.changeCheckboxState(target);
+      target.dispatchEvent(event);
+    }
+
+  };
+
+  housingFeaturesContainer.addEventListener('keydown', onFilterFeaturesEnterPress);
 
 })();

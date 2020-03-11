@@ -93,7 +93,7 @@
     var photoContainer = cardElement.querySelector('.popup__photos');
     var closeButton = cardElement.querySelector('.popup__close');
 
-    closeButton.addEventListener('click', closeCard);
+    closeButton.addEventListener('click', onCloseButtonClickCloseCard);
 
     cardElement.querySelector('.popup__avatar').src = data.author.avatar;
     cardElement.querySelector('.popup__title').textContent = data.offer.title;
@@ -124,17 +124,17 @@
     fragment.appendChild(setCard(window.dataPins[dataIndex]));
 
     mapArea.after(fragment);
-    document.addEventListener('keydown', onEscPress);
+    document.addEventListener('keydown', onEscPressCloseCard);
   };
 
   var closeCard = function () {
     var card = map.querySelector('.popup');
+    window.util.removeElement(card, map);
+    document.removeEventListener('keydown', onEscPressCloseCard);
+  };
 
-    if (card) {
-      map.removeChild(card);
-    }
-
-    document.removeEventListener('keydown', onEscPress);
+  var onCloseButtonClickCloseCard = function () {
+    closeCard();
   };
 
   var onOfferPinClick = function (evt) {
@@ -143,7 +143,7 @@
     renderCard(evt);
   };
 
-  var onEscPress = function (evt) {
+  var onEscPressCloseCard = function (evt) {
     if (evt.key === window.constants.escKey) {
       closeCard();
     }

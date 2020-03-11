@@ -80,13 +80,8 @@
   };
 
   var setPhotoErrorMessage = function (evt, chooser) {
-    var matches = window.util.fileMatches(evt.target, FILE_TYPES);
-
-    if (matches) {
-      var message = '';
-    } else {
-      message = 'Выберите подходящий формат изображения';
-    }
+    var matches = window.util.checkFilesForTypeMatches(evt.target, FILE_TYPES);
+    var message = matches ? '' : 'Выберите подходящий формат изображения';
 
     chooser.setCustomValidity(message);
   };

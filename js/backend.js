@@ -4,7 +4,7 @@
   var TIMEOUT_IN_MS = 10000;
   var RESPONSE_TYPE = 'json';
   var DOWNLOAD_URL = 'https://js.dump.academy/keksobooking/data';
-  var UPLOAD__URL = 'https://js.dump.academy/keksobooking/';
+  var UPLOAD_URL = 'https://js.dump.academy/keksobooking/';
   var Method = {
     GET: 'GET',
     POST: 'POST',
@@ -64,7 +64,7 @@
   var upload = function (data, onSuccess, onError) {
     var xhr = createXhr(onSuccess, onError);
 
-    xhr.open(Method.POST, UPLOAD__URL);
+    xhr.open(Method.POST, UPLOAD_URL);
     xhr.send(data);
   };
 

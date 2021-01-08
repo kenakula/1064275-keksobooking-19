@@ -3,8 +3,8 @@
 (function () {
   var TIMEOUT_IN_MS = 10000;
   var RESPONSE_TYPE = 'json';
-  var DOWNLOAD_URL = 'https://js.dump.academy/keksobooking/data';
-  var UPLOAD_URL = 'https://js.dump.academy/keksobooking/';
+  var DOWNLOAD_URL = 'https://javascript.pages.academy/keksobooking/data';
+  var UPLOAD_URL = 'https://javascript.pages.academy/keksobooking';
   var Method = {
     GET: 'GET',
     POST: 'POST',
